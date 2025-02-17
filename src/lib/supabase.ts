@@ -26,7 +26,16 @@ try {
 
 export const supabase = createClient(
   formattedUrl,
-  supabaseAnonKey
+  supabaseAnonKey,
+  {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: false
+    },
+    db: {
+      schema: 'public'
+    }
+  }
 );
 
 export type Product = {

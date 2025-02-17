@@ -86,16 +86,27 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Create subscribers table
+-- Create subscribers table if it doesn't exist
 create table if not exists public.subscribers (
   id uuid default gen_random_uuid() primary key,
   email text not null unique,
-  subscribed_at timestamp with time zone default timezone('utc'::text, now()) not null,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
 -- Enable RLS
-alter table public.subscribers enable row level security;
+alter table subscribers enable row level security;
+
+-- Drop existing policies if they exist
+drop policy if exists "Enable insert for all users" on subscribers;
+drop policy if exists "Enable select for authenticated users only" on subscribers;
+
+-- Create a simple insert policy that allows anyone to subscribe
+create policy "Anyone can subscribe" on subscribers for
+    insert with check (true);
+
+-- Create a policy that allows only authenticated users to view subscribers
+create policy "Only authenticated users can view subscribers" on subscribers for
+    select using (auth.role() = 'authenticated');
 
 -- Create policy to allow inserts
 create policy "Enable insert for all users" on public.subscribers

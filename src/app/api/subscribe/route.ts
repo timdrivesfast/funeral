@@ -1,6 +1,21 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '../../../lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 import { sendWelcomeEmail } from '../../../lib/resend'
+
+// Create a new Supabase client for each request
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: false
+    },
+    db: {
+      schema: 'public'
+    }
+  }
+)
 
 export async function POST(request: Request) {
   try {
@@ -27,7 +42,10 @@ export async function POST(request: Request) {
     // Insert into Supabase
     const { data, error } = await supabase
       .from('subscribers')
-      .insert([{ email }])
+      .insert([{ 
+        email,
+        created_at: new Date().toISOString()
+      }])
       .select()
 
     if (error) {
