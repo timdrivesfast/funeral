@@ -2,17 +2,27 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { sendWelcomeEmail } from '../../../lib/resend'
 
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  throw new Error('Missing Supabase URL')
+}
+
+if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+  throw new Error('Missing Supabase Anon Key')
+}
+
 // Create a new Supabase client for each request
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   {
     auth: {
       autoRefreshToken: true,
       persistSession: false
     },
-    db: {
-      schema: 'public'
+    global: {
+      headers: {
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
+      }
     }
   }
 )
@@ -39,14 +49,14 @@ export async function POST(request: Request) {
 
     console.log('Attempting to insert email:', email)
     
-    // Insert into Supabase
+    // Insert into Supabase with explicit schema
     const { data, error } = await supabase
       .from('subscribers')
       .insert([{ 
         email,
         created_at: new Date().toISOString()
       }])
-      .select()
+      .select('*')
 
     if (error) {
       console.error('Supabase error:', error)

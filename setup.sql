@@ -86,6 +86,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Drop all existing policies
+drop policy if exists "Enable insert for all users" on subscribers;
+drop policy if exists "Enable select for authenticated users only" on subscribers;
+drop policy if exists "Anyone can subscribe" on subscribers;
+drop policy if exists "Only authenticated users can view subscribers" on subscribers;
+
 -- Create subscribers table if it doesn't exist
 create table if not exists public.subscribers (
   id uuid default gen_random_uuid() primary key,
@@ -96,22 +102,17 @@ create table if not exists public.subscribers (
 -- Enable RLS
 alter table subscribers enable row level security;
 
--- Drop existing policies if they exist
-drop policy if exists "Enable insert for all users" on subscribers;
-drop policy if exists "Enable select for authenticated users only" on subscribers;
+-- Create a single, simple insert policy
+create policy "Enable insert for everyone" on subscribers
+  for insert
+  with check (true);
 
--- Create a simple insert policy that allows anyone to subscribe
-create policy "Anyone can subscribe" on subscribers for
-    insert with check (true);
+-- Create a policy for selecting (for authenticated users)
+create policy "Enable select for authenticated users" on subscribers
+  for select
+  using (auth.role() = 'authenticated');
 
--- Create a policy that allows only authenticated users to view subscribers
-create policy "Only authenticated users can view subscribers" on subscribers for
-    select using (auth.role() = 'authenticated');
-
--- Create policy to allow inserts
-create policy "Enable insert for all users" on public.subscribers
-  for insert with check (true);
-
--- Create policy to allow select for authenticated users only
-create policy "Enable select for authenticated users only" on public.subscribers
-  for select using (auth.role() = 'authenticated'); 
+-- Explicitly grant access to the anon role
+grant usage on schema public to anon;
+grant all on subscribers to anon;
+grant usage on sequence subscribers_id_seq to anon; 
