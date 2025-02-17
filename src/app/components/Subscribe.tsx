@@ -32,7 +32,7 @@ export default function Subscribe({ isControlled, isOpen: controlledIsOpen, onCl
       if (!response.ok) throw new Error('Subscription failed');
 
       setStatus('success');
-      setMessage('Welcome to the inner circle.');
+      setMessage('WELCOME TO FUNERAL');
       setEmail('');
       setTimeout(() => {
         handleClose?.();
