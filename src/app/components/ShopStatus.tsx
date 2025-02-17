@@ -6,17 +6,18 @@ import Subscribe from './Subscribe';
 
 export default function ShopStatus() {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false); // Start with closed state
+  const [isLoaded, setIsLoaded] = useState(false);
   const [showSubscribe, setShowSubscribe] = useState(false);
 
   useEffect(() => {
-    const checkShopStatus = () => {
-      // Force closed state for initial launch
-      setIsOpen(false);
-    };
-
-    checkShopStatus();
-    const interval = setInterval(checkShopStatus, 60000); // Check every minute
+    // Force closed state for initial launch
+    setIsOpen(false);
+    setIsLoaded(true);
+    
+    const interval = setInterval(() => {
+      setIsOpen(false); // Keep it closed
+    }, 60000); // Check every minute
 
     return () => clearInterval(interval);
   }, []);
@@ -28,6 +29,11 @@ export default function ShopStatus() {
       setShowSubscribe(true);
     }
   };
+
+  // Don't render anything until loaded to prevent flicker
+  if (!isLoaded) {
+    return null;
+  }
 
   return (
     <>
