@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/src/lib/supabase'
-import { sendWelcomeEmail } from '@/src/lib/resend'
+import { supabase } from '../../../lib/supabase'
+import { sendWelcomeEmail } from '../../../lib/resend'
 
 export async function POST(request: Request) {
   try {
@@ -13,12 +13,26 @@ export async function POST(request: Request) {
       )
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
+        { status: 400 }
+      )
+    }
+
+    console.log('Attempting to insert email:', email)
+    
     // Insert into Supabase
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('subscribers')
       .insert([{ email }])
+      .select()
 
     if (error) {
+      console.error('Supabase error:', error)
+      
       // If the error is a unique violation, return a nicer message
       if (error.code === '23505') {
         return NextResponse.json(
@@ -26,8 +40,14 @@ export async function POST(request: Request) {
           { status: 400 }
         )
       }
-      throw error
+      
+      return NextResponse.json(
+        { error: 'Database error: ' + error.message },
+        { status: 500 }
+      )
     }
+
+    console.log('Successfully inserted email:', data)
 
     // Send welcome email
     try {
@@ -38,12 +58,13 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ 
-      message: 'Subscribed successfully' 
+      message: 'Subscribed successfully',
+      data
     })
   } catch (error) {
     console.error('Subscription error:', error)
     return NextResponse.json(
-      { error: 'Failed to subscribe' },
+      { error: 'Failed to subscribe. Please try again.' },
       { status: 500 }
     )
   }
