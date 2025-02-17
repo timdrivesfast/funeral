@@ -6,7 +6,7 @@ export default function SquareScripts() {
   return (
     <Script
       src="https://web.squarecdn.com/v1/square.js"
-      strategy="beforeInteractive"
+      strategy="lazyOnload"
       onLoad={() => {
         console.log('Square SDK loaded');
       }}

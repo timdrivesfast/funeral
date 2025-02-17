@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getCatalogItemsWithInventory, squareClient } from '@/src/lib/square-server';
+import { squareClient } from '@/src/lib/square-server';
 import type { Square } from 'square';
 
 export async function GET() {

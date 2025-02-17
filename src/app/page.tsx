@@ -1,5 +1,3 @@
-import { Suspense } from 'react'
-import ProductGrid from './components/ProductGrid'
 import ShopStatus from './components/ShopStatus'
 
 export default function Home() {
