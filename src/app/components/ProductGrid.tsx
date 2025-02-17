@@ -1,0 +1,135 @@
+"use client";
+
+import { useEffect, useState } from 'react';
+import ProductCard from './ProductCard';
+import type { Square } from 'square';
+
+interface Product {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  stock: number;
+  image_url?: string;
+  category?: string;
+}
+
+function transformSquareItem(item: Square.CatalogObject & { quantity: number }, relatedObjects?: Square.CatalogObject[]): Product {
+  if (item.type !== 'ITEM' || !item.itemData) {
+    throw new Error('Invalid catalog item type');
+  }
+
+  const itemData = item.itemData;
+  const variation = itemData.variations?.[0];
+  const price = variation?.type === 'ITEM_VARIATION' && variation.itemVariationData?.priceMoney?.amount 
+    ? Number(variation.itemVariationData.priceMoney.amount) 
+    : 0;
+
+  // Find the category object and get its name
+  const categoryId = itemData.categories?.[0]?.id;
+  const categoryObject = relatedObjects?.find(obj => 
+    obj.type === 'CATEGORY' && obj.id === categoryId
+  );
+  
+  let categoryName = 'Uncategorized';
+  if (categoryObject?.type === 'CATEGORY') {
+    const categoryData = categoryObject as unknown as { categoryData: { name: string } };
+    categoryName = categoryData.categoryData?.name || 'Uncategorized';
+  }
+
+  // Find the image object and get its URL
+  const imageId = itemData.imageIds?.[0];
+  const imageObject = relatedObjects?.find(obj => 
+    obj.type === 'IMAGE' && obj.id === imageId
+  );
+  const imageUrl = imageObject?.type === 'IMAGE' && imageObject.imageData?.url || undefined;
+
+  return {
+    id: item.id,
+    name: itemData.name || '',
+    description: itemData.description || '',
+    price,
+    stock: item.quantity,
+    image_url: imageUrl,
+    category: categoryName
+  };
+}
+
+export default function ProductGrid({ category }: { category?: string }) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/products');
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('API Error Response:', errorData);
+          throw new Error(errorData.error || 'Failed to fetch products');
+        }
+        const data = await response.json();
+        console.log('Products Response:', data);
+        setProducts(data.items.map((item: Square.CatalogObject & { quantity: number }) => 
+          transformSquareItem(item, data.relatedObjects)
+        ));
+      } catch (err) {
+        console.error('Detailed fetch error:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load products.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [category]);
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <p className="text-red-500 text-center p-4 animate-fade-in">{error}</p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-4">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="animate-pulse">
+            <div className="bg-zinc-800/50 rounded-lg overflow-hidden">
+              <div className="aspect-square" />
+              <div className="p-6 space-y-3">
+                <div className="h-6 bg-zinc-700/50 rounded w-2/3" />
+                <div className="flex justify-between">
+                  <div className="h-4 bg-zinc-700/50 rounded w-1/3" />
+                  <div className="h-4 bg-zinc-700/50 rounded w-1/4" />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  const filteredProducts = category
+    ? products.filter(product => product.category?.toLowerCase() === category.toLowerCase())
+    : products;
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-4 animate-fade-in">
+      {filteredProducts.length === 0 ? (
+        <div className="col-span-full flex items-center justify-center min-h-[400px]">
+          <p className="text-zinc-500 text-center">No products found</p>
+        </div>
+      ) : (
+        filteredProducts.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))
+      )}
+    </div>
+  );
+} 

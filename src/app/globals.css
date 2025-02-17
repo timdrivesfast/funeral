@@ -3,19 +3,25 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 0, 0, 0;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
 }
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-none transition-colors duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-white text-black hover:bg-gray-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-transparent border border-white hover:bg-white hover:text-black;
+  }
+} 
