@@ -67,10 +67,11 @@ export default function Subscribe({ isControlled, isOpen: controlledIsOpen, onCl
             <div className="bg-zinc-950 border border-zinc-800 rounded-lg shadow-lg">
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
+                  <div className="w-6" /> {/* Spacer for visual balance */}
                   <h2 className="text-lg font-medium text-zinc-200">FUNERAL</h2>
                   <button
                     onClick={handleClose}
-                    className="text-zinc-400 hover:text-zinc-100 transition-colors"
+                    className="text-zinc-400 hover:text-zinc-100 transition-colors w-6"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="18" y1="6" x2="6" y2="18"></line>
