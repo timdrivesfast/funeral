@@ -1,30 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { sendWelcomeEmail } from '../../../lib/resend'
 
-if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-  throw new Error('Missing Supabase URL')
-}
-
-if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-  throw new Error('Missing Supabase Anon Key')
-}
-
-// Create a new Supabase client for each request
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: false
-    },
-    global: {
-      headers: {
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
-      }
-    }
-  }
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
 export async function POST(request: Request) {
@@ -38,7 +17,7 @@ export async function POST(request: Request) {
       )
     }
 
-    // Validate email format
+    // Simple email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -47,52 +26,35 @@ export async function POST(request: Request) {
       )
     }
 
-    console.log('Attempting to insert email:', email)
-    
-    // Insert into Supabase with explicit schema
-    const { data, error } = await supabase
+    // Insert into Supabase
+    const { error } = await supabase
       .from('subscribers')
-      .insert([{ 
-        email,
-        created_at: new Date().toISOString()
-      }])
-      .select('*')
+      .insert([{ email }])
 
     if (error) {
-      console.error('Supabase error:', error)
-      
-      // If the error is a unique violation, return a nicer message
+      // If email already exists
       if (error.code === '23505') {
         return NextResponse.json(
           { error: 'You are already subscribed' },
           { status: 400 }
         )
       }
-      
+
+      console.error('Subscription error:', error)
       return NextResponse.json(
-        { error: 'Database error: ' + error.message },
+        { error: 'Failed to subscribe' },
         { status: 500 }
       )
     }
 
-    console.log('Successfully inserted email:', data)
-
-    // Send welcome email
-    try {
-      await sendWelcomeEmail(email)
-    } catch (emailError) {
-      console.error('Failed to send welcome email:', emailError)
-      // Don't fail the subscription if email fails
-    }
-
-    return NextResponse.json({ 
-      message: 'Subscribed successfully',
-      data
+    return NextResponse.json({
+      success: true,
+      message: 'Successfully subscribed'
     })
   } catch (error) {
-    console.error('Subscription error:', error)
+    console.error('Server error:', error)
     return NextResponse.json(
-      { error: 'Failed to subscribe. Please try again.' },
+      { error: 'Server error' },
       { status: 500 }
     )
   }
