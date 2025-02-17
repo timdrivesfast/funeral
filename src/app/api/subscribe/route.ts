@@ -1,11 +1,6 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
+import { supabase } from '@/src/lib/supabase'
 import { sendWelcomeEmail } from '@/src/lib/resend'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 export async function POST(request: Request) {
   try {
@@ -18,9 +13,10 @@ export async function POST(request: Request) {
       )
     }
 
+    // Insert into Supabase
     const { error } = await supabase
       .from('subscribers')
-      .insert([{ email, subscribed_at: new Date().toISOString() }])
+      .insert([{ email }])
 
     if (error) {
       // If the error is a unique violation, return a nicer message
@@ -34,9 +30,16 @@ export async function POST(request: Request) {
     }
 
     // Send welcome email
-    await sendWelcomeEmail(email)
+    try {
+      await sendWelcomeEmail(email)
+    } catch (emailError) {
+      console.error('Failed to send welcome email:', emailError)
+      // Don't fail the subscription if email fails
+    }
 
-    return NextResponse.json({ message: 'Subscribed successfully' })
+    return NextResponse.json({ 
+      message: 'Subscribed successfully' 
+    })
   } catch (error) {
     console.error('Subscription error:', error)
     return NextResponse.json(

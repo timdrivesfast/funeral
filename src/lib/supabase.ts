@@ -1,11 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
 if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL environment variable');
+  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL');
 }
 
 if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable');
+  throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY');
 }
 
 // Ensure the URL is properly formatted with https protocol
@@ -24,11 +24,10 @@ try {
   throw new Error(`Invalid NEXT_PUBLIC_SUPABASE_URL: ${formattedUrl}`);
 }
 
-export const supabase = createClient(formattedUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: false // Since we're using server components
-  }
-});
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 export type Product = {
   id: string;
