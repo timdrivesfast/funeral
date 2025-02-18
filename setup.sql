@@ -1,8 +1,13 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Drop existing tables if you want to recreate them
+DROP TABLE IF EXISTS products CASCADE;
+DROP TABLE IF EXISTS cart_items CASCADE;
+DROP TABLE IF EXISTS subscribers CASCADE;
+
 -- Create products table
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
@@ -14,8 +19,8 @@ CREATE TABLE products (
 );
 
 -- Create indexes for better query performance
-CREATE INDEX products_category_idx ON products(category);
-CREATE INDEX products_created_at_idx ON products(created_at DESC);
+CREATE INDEX IF NOT EXISTS products_category_idx ON products(category);
+CREATE INDEX IF NOT EXISTS products_created_at_idx ON products(created_at DESC);
 
 -- Insert sample jewelry products
 INSERT INTO products (name, description, price, stock, image_url, category) VALUES
@@ -71,6 +76,78 @@ INSERT INTO products (name, description, price, stock, image_url, category) VALU
     'packaging'
 );
 
+-- Create subscribers table
+CREATE TABLE IF NOT EXISTS subscribers (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  email text NOT NULL UNIQUE,
+  created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Create cart_items table
+CREATE TABLE IF NOT EXISTS cart_items (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  session_id UUID NOT NULL,
+  product_id TEXT NOT NULL,
+  quantity INTEGER NOT NULL CHECK (quantity > 0),
+  created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Create indexes
+CREATE INDEX IF NOT EXISTS cart_items_session_id_idx ON cart_items(session_id);
+
+-- Create function to update timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = timezone('utc'::text, now());
+  RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Create trigger for updating timestamp
+DROP TRIGGER IF EXISTS update_cart_items_updated_at ON cart_items;
+CREATE TRIGGER update_cart_items_updated_at
+  BEFORE UPDATE ON cart_items
+  FOR EACH ROW
+  EXECUTE PROCEDURE update_updated_at_column();
+
+-- Enable RLS
+ALTER TABLE subscribers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE cart_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+
+-- Drop all existing policies
+DROP POLICY IF EXISTS "Enable insert for all users" ON subscribers;
+DROP POLICY IF EXISTS "Enable select for authenticated users only" ON subscribers;
+DROP POLICY IF EXISTS "Anyone can subscribe" ON subscribers;
+DROP POLICY IF EXISTS "Only authenticated users can view subscribers" ON subscribers;
+DROP POLICY IF EXISTS "Anyone can manage their own cart items" ON cart_items;
+
+-- Create policies
+CREATE POLICY "Enable insert for everyone" ON subscribers
+  FOR INSERT
+  WITH CHECK (true);
+
+CREATE POLICY "Enable select for authenticated users" ON subscribers
+  FOR SELECT
+  USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Anyone can manage their own cart items" ON cart_items
+  FOR ALL
+  USING (true);
+
+CREATE POLICY "Anyone can view products" ON products
+  FOR SELECT
+  USING (true);
+
+-- Grant permissions
+GRANT USAGE ON SCHEMA public TO anon;
+GRANT ALL ON subscribers TO anon;
+GRANT ALL ON cart_items TO anon;
+GRANT SELECT ON products TO anon;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO anon;
+
 -- Create function to check stock before purchase
 CREATE OR REPLACE FUNCTION check_product_stock(product_id UUID, quantity INTEGER)
 RETURNS BOOLEAN AS $$
@@ -84,35 +161,4 @@ BEGIN
     -- If stock is NULL (infinite) or greater than quantity, return true
     RETURN current_stock IS NULL OR current_stock >= quantity;
 END;
-$$ LANGUAGE plpgsql;
-
--- Drop all existing policies
-drop policy if exists "Enable insert for all users" on subscribers;
-drop policy if exists "Enable select for authenticated users only" on subscribers;
-drop policy if exists "Anyone can subscribe" on subscribers;
-drop policy if exists "Only authenticated users can view subscribers" on subscribers;
-
--- Create subscribers table if it doesn't exist
-create table if not exists public.subscribers (
-  id uuid default gen_random_uuid() primary key,
-  email text not null unique,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
-
--- Enable RLS
-alter table subscribers enable row level security;
-
--- Create a single, simple insert policy
-create policy "Enable insert for everyone" on subscribers
-  for insert
-  with check (true);
-
--- Create a policy for selecting (for authenticated users)
-create policy "Enable select for authenticated users" on subscribers
-  for select
-  using (auth.role() = 'authenticated');
-
--- Explicitly grant access to the anon role
-grant usage on schema public to anon;
-grant all on subscribers to anon;
-grant usage on sequence subscribers_id_seq to anon; 
+$$ LANGUAGE plpgsql; 

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import Cart from './Cart'
 
 export default function Header() {
   const pathname = usePathname()
@@ -29,7 +30,7 @@ export default function Header() {
       </Link>
 
       {isStoreOpen && (
-        <nav className="space-x-6">
+        <nav className="flex items-center space-x-6">
           <Link
             href="/products?category=objects"
             className={`hover:text-white transition-colors ${
@@ -46,6 +47,7 @@ export default function Header() {
           >
             Packaging
           </Link>
+          <Cart />
         </nav>
       )}
     </header>

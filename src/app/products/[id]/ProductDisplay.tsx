@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react'
-import CheckoutButton from '@/src/app/components/CheckoutButton'
+import { useCart } from '@/src/contexts/CartContext'
 
 interface Product {
   id: string;
@@ -34,9 +34,51 @@ function formatProductDetails(description: string = '') {
 }
 
 export default function ProductDisplay({ product }: Props) {
+  const { addItem } = useCart();
   const [imageError, setImageError] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
+  const [isBuying, setIsBuying] = useState(false);
   const details = formatProductDetails(product.description);
+
+  const handleAddToCart = async () => {
+    setIsAdding(true);
+    try {
+      await addItem(product.id, quantity);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    setIsBuying(true);
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: product.id,
+          quantity
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Checkout failed');
+      }
+
+      const { url } = await response.json();
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error during checkout:', error);
+    } finally {
+      setIsBuying(false);
+    }
+  };
 
   return (
     <main className="min-h-screen p-4 md:p-10">
@@ -97,7 +139,52 @@ export default function ProductDisplay({ product }: Props) {
                 {product.stock} Available
               </p>
             )}
-            <CheckoutButton productId={product.id} />
+            
+            <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center border border-zinc-800 rounded-md">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="px-3 py-2 text-zinc-400 hover:text-white transition-colors"
+                  disabled={quantity <= 1}
+                >
+                  -
+                </button>
+                <span className="w-12 text-center">{quantity}</span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="px-3 py-2 text-zinc-400 hover:text-white transition-colors"
+                  disabled={product.stock !== undefined && quantity >= product.stock}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col space-y-4">
+              <button
+                onClick={handleAddToCart}
+                disabled={isAdding || (product.stock !== undefined && quantity > product.stock)}
+                className="relative select-none cursor-pointer px-8 py-3 text-sm uppercase tracking-[0.2em] text-zinc-400 hover:text-white transition-colors duration-500 ease-out disabled:opacity-50 disabled:cursor-not-allowed group"
+              >
+                <div className="absolute inset-0 border border-zinc-800 group-hover:border-zinc-700 transition-colors duration-500" />
+                <div className="relative">
+                  {isAdding ? 'Adding...' : 'Add to Cart'}
+                </div>
+              </button>
+              
+              <button
+                onClick={handleBuyNow}
+                disabled={isBuying || (product.stock !== undefined && quantity > product.stock)}
+                className="relative select-none cursor-pointer px-8 py-3 text-sm uppercase tracking-[0.2em] transition-all duration-500 ease-out disabled:opacity-50 disabled:cursor-not-allowed group"
+              >
+                <div className="absolute inset-0 bg-white opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 blur-xl opacity-30 bg-white group-hover:opacity-40 transition-opacity duration-500" />
+                <div className="relative text-black">
+                  {isBuying ? 'Processing...' : 'Buy Now'}
+                </div>
+                <div className="absolute inset-0 opacity-0 animate-[flicker_4s_infinite] bg-white/50 mix-blend-overlay" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
