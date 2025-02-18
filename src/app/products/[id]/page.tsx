@@ -9,9 +9,10 @@ interface Props {
   }
 }
 
-async function getProduct(id: string) {
+async function getProduct(id: Promise<string>) {
+  const productId = await id;
   const items = await getCatalogItemsWithInventory()
-  const product = items.find(item => item.id === id)
+  const product = items.find(item => item.id === productId)
   if (!product || product.type !== 'ITEM') return null
 
   const itemData = product.itemData
@@ -30,7 +31,7 @@ async function getProduct(id: string) {
 }
 
 export default async function ProductPage({ params }: Props) {
-  const product = await getProduct(params.id)
+  const product = await getProduct(Promise.resolve(params.id))
   
   if (!product) {
     notFound()

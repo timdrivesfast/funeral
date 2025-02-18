@@ -42,7 +42,7 @@ function transformSquareItem(item: Square.CatalogObject & { quantity: number }, 
   const imageObject = relatedObjects?.find(obj => 
     obj.type === 'IMAGE' && obj.id === imageId
   );
-  const imageUrl = imageObject?.type === 'IMAGE' && imageObject.imageData?.url || undefined;
+  const imageUrl = imageId ? `/api/images/${imageId}` : undefined;
 
   return {
     id: item.id,
@@ -96,19 +96,10 @@ export default function ProductGrid({ category }: { category?: string }) {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="animate-pulse">
-            <div className="bg-zinc-800/50 rounded-lg overflow-hidden">
-              <div className="aspect-square" />
-              <div className="p-6 space-y-3">
-                <div className="h-6 bg-zinc-700/50 rounded w-2/3" />
-                <div className="flex justify-between">
-                  <div className="h-4 bg-zinc-700/50 rounded w-1/3" />
-                  <div className="h-4 bg-zinc-700/50 rounded w-1/4" />
-                </div>
-              </div>
-            </div>
+          <div key={i} className="animate-pulse aspect-square">
+            <div className="bg-zinc-900/30 h-full w-full" />
           </div>
         ))}
       </div>
@@ -120,7 +111,7 @@ export default function ProductGrid({ category }: { category?: string }) {
     : products;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-4 animate-fade-in">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16 animate-fade-in">
       {filteredProducts.length === 0 ? (
         <div className="col-span-full flex items-center justify-center min-h-[400px]">
           <p className="text-zinc-500 text-center">No products found</p>
