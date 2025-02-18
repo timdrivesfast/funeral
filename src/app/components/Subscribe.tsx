@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { track } from '@vercel/analytics';
 
 interface Props {
   isControlled?: boolean;
@@ -31,6 +32,12 @@ export default function Subscribe({ isControlled, isOpen: controlledIsOpen, onCl
 
       if (!response.ok) throw new Error('Subscription failed');
 
+      // Track successful subscription
+      track('Email Subscription', {
+        status: 'success',
+        source: isControlled ? 'shop_status' : 'footer'
+      });
+
       setStatus('success');
       setMessage('WELCOME TO FUNERAL');
       setEmail('');
@@ -38,16 +45,30 @@ export default function Subscribe({ isControlled, isOpen: controlledIsOpen, onCl
         handleClose?.();
       }, 2000);
     } catch (error) {
+      // Track failed subscription
+      track('Email Subscription', {
+        status: 'error',
+        source: isControlled ? 'shop_status' : 'footer'
+      });
+
       setStatus('error');
       setMessage('Something went wrong. Please try again.');
     }
+  };
+
+  // Track when modal is opened
+  const handleOpen = () => {
+    track('Subscription Modal Opened', {
+      source: 'footer'
+    });
+    setInternalIsOpen(true);
   };
 
   return (
     <>
       {!isControlled && (
         <button
-          onClick={() => setInternalIsOpen(true)}
+          onClick={handleOpen}
           className="hover:text-white transition-colors font-['Helvetica_Neue']"
         >
           {buttonText}
