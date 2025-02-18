@@ -84,26 +84,25 @@ export default function ProductDisplay({ product }: Props) {
     <main className="min-h-screen p-4 md:p-10">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
         {/* Product Image */}
-        <div className="relative aspect-square bg-zinc-900/30 rounded-lg overflow-hidden">
+        <div className="relative aspect-square bg-transparent">
           {product.image_url && !imageError ? (
             <>
               {isImageLoading && (
-                <div className="absolute inset-0 bg-zinc-900/30 flex items-center justify-center">
-                  <span className="text-zinc-500 text-sm">Loading image...</span>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-zinc-500 text-sm">Loading...</span>
                 </div>
               )}
               <img
                 src={product.image_url}
                 alt={product.name}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-                  isImageLoading ? 'opacity-0' : 'opacity-100'
-                }`}
+                className={`absolute inset-0 w-full h-full object-cover opacity-80 hover:opacity-100
+                  transition-all duration-700 ease-out ${isImageLoading ? 'opacity-0' : 'opacity-80'}`}
                 onError={() => setImageError(true)}
                 onLoad={() => setIsImageLoading(false)}
               />
             </>
           ) : (
-            <div className="w-full h-full bg-zinc-900/30 flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center">
               <span className="text-zinc-500 text-sm">
                 {imageError ? 'Failed to load image' : 'No image available'}
               </span>
