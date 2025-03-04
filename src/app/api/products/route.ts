@@ -86,7 +86,13 @@ export async function GET(request: Request) {
         return a.name.localeCompare(b.name);
       });
     
-    return NextResponse.json(products);
+    return NextResponse.json(products, {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error) {
     console.error('Error fetching products:', error);
     if (error && typeof error === 'object' && 'errors' in error) {

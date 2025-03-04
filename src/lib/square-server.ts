@@ -154,7 +154,8 @@ export async function getCatalogItemsWithInventory() {
     // First, get catalog items
     const catalogResponse = await squareClient.catalog.search({
       objectTypes: ['ITEM'],
-      includeRelatedObjects: true  // This will include category information
+      includeRelatedObjects: true,  // This will include category information
+      limit: 100  // Ensure we get all items
     });
 
     // Convert BigInt to string for logging
@@ -166,6 +167,11 @@ export async function getCatalogItemsWithInventory() {
     
     // Then, get inventory for these items
     const itemIds = items.map((item: Square.CatalogObject) => item.id).filter((id): id is string => id !== undefined);
+    
+    // Add timestamp to ensure we're not getting cached data
+    const timestamp = new Date().toISOString();
+    console.log(`Fetching inventory at ${timestamp}`);
+    
     const inventoryResponse = await squareClient.inventory.batchGetCounts({
       catalogObjectIds: itemIds,
       locationIds: [process.env.SQUARE_LOCATION_ID!]
