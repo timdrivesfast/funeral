@@ -8,7 +8,7 @@ interface Product {
   id: string;
   name: string;
   description?: string;
-  price: number;
+  price: number | string;
   stock?: number | string;
   image_url?: string;
   image_urls?: string[];
@@ -47,6 +47,11 @@ export default function ProductCard({ product }: Props) {
       setIsImageLoading(false);
     }
   };
+  
+  // Format price for display
+  const formattedPrice = typeof price === 'string' 
+    ? `$${parseFloat(price).toFixed(2)}` 
+    : `$${price.toFixed(2)}`;
   
   return (
     <Link 
@@ -100,7 +105,7 @@ export default function ProductCard({ product }: Props) {
           <div className="space-y-2">
             <div className="flex justify-between items-baseline">
               <p className="text-lg font-medium tracking-tight text-white">
-                ${(price / 100).toFixed(2)}
+                {formattedPrice}
               </p>
               <span className="text-xs text-zinc-400 uppercase tracking-wider">
                 View Details →

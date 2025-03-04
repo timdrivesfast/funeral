@@ -64,14 +64,18 @@ export async function GET(request: Request) {
         // Extract variations
         const variations = itemData?.variations || [];
         const firstVariation = variations[0];
-        const price = firstVariation?.itemVariationData?.priceMoney?.amount || 0;
+        const priceInCents = firstVariation?.itemVariationData?.priceMoney?.amount || 0;
+        
+        // Convert cents to dollars and format to 2 decimal places
+        const price = Number(priceInCents) / 100;
+        console.log(`API: Item ${id} (${itemData?.name}) price: ${priceInCents} cents = $${price.toFixed(2)}`);
         
         // Create product object
         const product = {
           id,
           name: itemData?.name || '',
           description: itemData?.description || '',
-          price: price / 100, // Convert cents to dollars
+          price: price, // Price in dollars
           stock,
           image_url: image_urls[0] || null,
           image_urls: image_urls.length > 0 ? image_urls : null,

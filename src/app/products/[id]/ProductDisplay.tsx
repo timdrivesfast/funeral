@@ -6,7 +6,7 @@ interface Product {
   id: string;
   name: string;
   description?: string;
-  price: number;
+  price: number | string;
   stock?: number | string;
   image_url?: string;
   image_urls?: string[]; 
@@ -42,6 +42,13 @@ export default function ProductDisplay({ product }: Props) {
   const [isBuying, setIsBuying] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const details = formatProductDetails(product.description);
+  
+  // Format price for display
+  const formattedPrice = typeof product.price === 'string' 
+    ? `$${parseFloat(product.price).toFixed(2)}` 
+    : `$${product.price.toFixed(2)}`;
+    
+  console.log(`ProductDisplay - Product: ${product.name}, Price: ${product.price}, Type: ${typeof product.price}, Formatted: ${formattedPrice}`);
   
   // Get all available images (either from image_urls or fallback to image_url)
   const images = product.image_urls?.length ? product.image_urls : (product.image_url ? [product.image_url] : []);
@@ -163,7 +170,9 @@ export default function ProductDisplay({ product }: Props) {
                 {product.category || 'Uncategorized'}
               </p>
               <h1 className="text-4xl font-bold tracking-tight mb-2">{product.name}</h1>
-              <p className="text-2xl font-medium">${(product.price / 100).toFixed(2)}</p>
+              <div className="flex items-baseline">
+                <h1 className="text-4xl font-bold text-white">{formattedPrice}</h1>
+              </div>
             </div>
 
             {/* Formatted Product Details */}

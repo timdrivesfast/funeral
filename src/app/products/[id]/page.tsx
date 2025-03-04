@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
-import { getCatalogItemsWithInventory } from '@/src/lib/square-server'
-import type { Square } from 'square'
+import { Metadata } from 'next'
 import ProductDisplay from './ProductDisplay'
+import { getCatalogItemsWithInventory, squareClient } from '@/src/lib/square-server'
+import type { Square } from 'square'
 
 interface Props {
   params: {
@@ -59,7 +60,7 @@ async function getProduct(id: Promise<string>) {
 
     const itemData = product.itemData
     const variation = itemData?.variations?.[0]
-    const price = variation?.type === 'ITEM_VARIATION' ? Number(variation.itemVariationData?.priceMoney?.amount) || 0 : 0
+    const price = variation?.type === 'ITEM_VARIATION' ? Number(variation.itemVariationData?.priceMoney?.amount) / 100 || 0 : 0
     
     // Get all image URLs instead of just the first one
     const imageUrls = itemData?.imageIds?.map(imageId => `/api/images/${imageId}`) || [];
@@ -68,7 +69,7 @@ async function getProduct(id: Promise<string>) {
       id: product.id,
       name: itemData?.name || '',
       description: itemData?.description || '',
-      price,
+      price: price.toFixed(2), // Format price to two decimal places
       stock: product.quantity,
       image_url: imageUrls[0] || '', // Keep the main image URL for backward compatibility
       image_urls: imageUrls, // Add all image URLs as an array
