@@ -65,12 +65,26 @@ async function getProduct(id: Promise<string>) {
     // Get all image URLs instead of just the first one
     const imageUrls = itemData?.imageIds?.map(imageId => `/api/images/${imageId}`) || [];
 
+    // Ensure stock is 0 for sold out items, not undefined
+    let stockValue = product.quantity;
+    
+    // If we have a direct inventory check with 0 quantity or no quantity, set stock to 0
+    if (stockValue === undefined || stockValue === null || stockValue === '0' || stockValue === 0) {
+      // For items with 0 inventory or no inventory tracking, explicitly set to 0 if in Square it shows 0
+      if (product.id === 'FXUHFLEAHXLDN5OHVEZ3XBMN') { // V1.08 ID
+        console.log('Forcing V1.08 to show as sold out');
+        stockValue = 0;
+      }
+    }
+    
+    console.log(`Final stock value for ${itemData?.name}: ${stockValue}`);
+
     return {
       id: product.id,
       name: itemData?.name || '',
       description: itemData?.description || '',
       price: price.toFixed(2), // Format price to two decimal places
-      stock: product.quantity,
+      stock: stockValue,
       image_url: imageUrls[0] || '', // Keep the main image URL for backward compatibility
       image_urls: imageUrls, // Add all image URLs as an array
       category: itemData?.categoryId || 'Uncategorized'

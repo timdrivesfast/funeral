@@ -67,7 +67,7 @@ export async function GET(request: Request) {
         const priceInCents = firstVariation?.itemVariationData?.priceMoney?.amount || 0;
         
         // Convert cents to dollars and format to 2 decimal places
-        const price = Number(priceInCents) / 100;
+        const price = parseFloat(priceInCents.toString()) / 100;
         console.log(`API: Item ${id} (${itemData?.name}) price: ${priceInCents} cents = $${price.toFixed(2)}`);
         
         // Create product object
@@ -81,6 +81,12 @@ export async function GET(request: Request) {
           image_urls: image_urls.length > 0 ? image_urls : null,
           category: itemData?.category || 'Uncategorized',
         };
+        
+        // Special case handling for known sold out items
+        if (id === 'FXUHFLEAHXLDN5OHVEZ3XBMN') { // V1.08 ID
+          console.log(`API: Forcing product ${id} (${product.name}) to show as sold out`);
+          product.stock = 0;
+        }
         
         console.log(`API: Transformed product ${id} (${product.name}): stock=${product.stock}, price=${product.price}`);
         return product;

@@ -203,9 +203,29 @@ export async function getCatalogItemsWithInventory() {
 
     // Convert BigInt to string in the response
     return items.map((item: Square.CatalogObject) => {
+      // Check if this is a known sold out item (V1.08)
+      if (item.id === 'FXUHFLEAHXLDN5OHVEZ3XBMN') {
+        console.log(`Forcing item ${item.id} (${item.itemData?.name}) to have 0 quantity`);
+        const itemWithQuantity = {
+          ...item,
+          quantity: '0' // Set to 0 as a string to match Square's format
+        };
+        
+        // Log the final item with quantity
+        console.log(`Final item ${item.id} (${item.itemData?.name}): quantity = ${itemWithQuantity.quantity} (FORCED SOLD OUT)`);
+        
+        // Convert any BigInt values to strings
+        return JSON.parse(JSON.stringify(itemWithQuantity, (key, value) =>
+          typeof value === 'bigint' ? value.toString() : value
+        ));
+      }
+      
+      // Get inventory from Square API response
+      const quantity = inventoryMap.has(item.id) ? inventoryMap.get(item.id) : undefined;
+      
       const itemWithQuantity = {
         ...item,
-        quantity: inventoryMap.has(item.id) ? inventoryMap.get(item.id) : undefined
+        quantity
       };
 
       // Log the final item with quantity

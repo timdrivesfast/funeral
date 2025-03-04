@@ -34,3 +34,32 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Square Integration
+
+This project uses Square APIs for product catalog, inventory management, and payment processing.
+
+### Required Environment Variables
+
+```
+SQUARE_ACCESS_TOKEN=your_square_access_token
+SQUARE_LOCATION_ID=your_square_location_id
+NEXT_PUBLIC_SITE_URL=your_site_url
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SQUARE_WEBHOOK_SIGNATURE_KEY=your_webhook_signature_key
+```
+
+### Webhook Setup
+
+For real-time inventory updates, configure a Square webhook:
+
+1. Go to the [Square Developer Dashboard](https://developer.squareup.com/apps)
+2. Select your application
+3. Navigate to the Webhooks section
+4. Add a new webhook endpoint:
+   - URL: `https://your-domain.com/api/webhooks/square`
+   - Event type: `inventory.count.updated`
+5. Copy the Signature Key and add it to your environment variables as `SQUARE_WEBHOOK_SIGNATURE_KEY`
+
+This webhook will automatically update your inventory when changes occur in Square, ensuring your website always displays accurate stock information.

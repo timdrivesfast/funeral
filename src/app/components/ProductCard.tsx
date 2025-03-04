@@ -23,29 +23,20 @@ export default function ProductCard({ product }: Props) {
   const { id, name, price, image_url, category, stock } = product
   const [imageError, setImageError] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
-  const [retryCount, setRetryCount] = useState(0);
   const [finalImageUrl, setFinalImageUrl] = useState(image_url);
   
   // Add a timestamp to the image URL to prevent caching issues
   useEffect(() => {
     if (image_url) {
-      setFinalImageUrl(`${image_url}?t=${Date.now()}`);
+      setFinalImageUrl(image_url);
     }
   }, [image_url]);
   
-  // Handle image retry logic
+  // Handle image error
   const handleImageError = () => {
-    console.error(`Failed to load image for product: ${name} (${id}), URL: ${finalImageUrl}`);
-    
-    if (retryCount < 2 && image_url) {
-      // Retry loading the image with a new timestamp
-      setRetryCount(prev => prev + 1);
-      setFinalImageUrl(`${image_url}?retry=${retryCount + 1}&t=${Date.now()}`);
-      console.log(`Retrying image load (attempt ${retryCount + 1}): ${finalImageUrl}`);
-    } else {
-      setImageError(true);
-      setIsImageLoading(false);
-    }
+    console.log(`Image failed to load for product: ${name} (${id})`);
+    setImageError(true);
+    setIsImageLoading(false);
   };
   
   // Format price for display

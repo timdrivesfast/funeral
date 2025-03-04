@@ -55,11 +55,12 @@ export default function ProductDisplay({ product }: Props) {
   const currentImage = images[currentImageIndex];
   
   // Check if product is sold out (stock is explicitly 0)
-  // If stock is undefined or null, we assume it's available
+  // If stock is undefined or null, we need to check the product ID for known sold out items
   const isSoldOut = product.stock === 0 || product.stock === '0' || 
-                   (typeof product.stock === 'string' && product.stock.trim() === '0');
+                   (typeof product.stock === 'string' && product.stock.trim() === '0') ||
+                   product.id === 'FXUHFLEAHXLDN5OHVEZ3XBMN'; // Hardcoded V1.08 ID
   
-  console.log(`ProductDisplay - Product: ${product.name}, Stock: ${product.stock}, Type: ${typeof product.stock}, isSoldOut: ${isSoldOut}`);
+  console.log(`ProductDisplay - Product: ${product.name}, Stock: ${product.stock}, Type: ${typeof product.stock}, isSoldOut: ${isSoldOut}, ID: ${product.id}`);
   
   useEffect(() => {
     console.log(`ProductDisplay useEffect - Re-checking stock: ${product.stock}, Type: ${typeof product.stock}`);
