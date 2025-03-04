@@ -17,8 +17,9 @@ export async function POST(request: Request) {
       )
     }
 
-    // Check stock
-    if (product.quantity !== undefined && product.quantity < quantity) {
+    // Check stock only if quantity is defined
+    // If quantity is undefined or null, assume the product is available
+    if (product.quantity !== undefined && product.quantity !== null && product.quantity < quantity) {
       return NextResponse.json(
         { error: 'Insufficient stock' },
         { status: 400 }
@@ -47,4 +48,4 @@ export async function POST(request: Request) {
       { status: 500 }
     )
   }
-} 
+}

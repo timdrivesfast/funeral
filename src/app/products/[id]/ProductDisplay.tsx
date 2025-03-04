@@ -1,15 +1,15 @@
 'use client';
 
 import { useState } from 'react'
-import { useCart } from '@/src/contexts/CartContext'
 
 interface Product {
   id: string;
   name: string;
   description?: string;
   price: number;
-  stock: number;
+  stock?: number;
   image_url?: string;
+  image_urls?: string[]; 
   category?: string;
 }
 
@@ -34,24 +34,20 @@ function formatProductDetails(description: string = '') {
 }
 
 export default function ProductDisplay({ product }: Props) {
-  const { addItem } = useCart();
   const [imageError, setImageError] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const [isAdding, setIsAdding] = useState(false);
   const [isBuying, setIsBuying] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const details = formatProductDetails(product.description);
-
-  const handleAddToCart = async () => {
-    setIsAdding(true);
-    try {
-      await addItem(product.id, quantity);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    } finally {
-      setIsAdding(false);
-    }
-  };
+  
+  // Get all available images (either from image_urls or fallback to image_url)
+  const images = product.image_urls?.length ? product.image_urls : (product.image_url ? [product.image_url] : []);
+  const currentImage = images[currentImageIndex];
+  
+  // Check if product is sold out (stock is explicitly 0)
+  // If stock is undefined or null, we assume it's available
+  const isSoldOut = product.stock === 0;
 
   const handleBuyNow = async () => {
     setIsBuying(true);
@@ -83,29 +79,68 @@ export default function ProductDisplay({ product }: Props) {
   return (
     <main className="min-h-screen p-4 md:p-10">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
-        {/* Product Image */}
-        <div className="relative aspect-square bg-transparent">
-          {product.image_url && !imageError ? (
-            <>
-              {isImageLoading && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-zinc-500 text-sm">Loading...</span>
-                </div>
-              )}
-              <img
-                src={product.image_url}
-                alt={product.name}
-                className={`absolute inset-0 w-full h-full object-cover opacity-80 hover:opacity-100
-                  transition-all duration-700 ease-out ${isImageLoading ? 'opacity-0' : 'opacity-80'}`}
-                onError={() => setImageError(true)}
-                onLoad={() => setIsImageLoading(false)}
-              />
-            </>
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <span className="text-zinc-500 text-sm">
-                {imageError ? 'Failed to load image' : 'No image available'}
-              </span>
+        {/* Product Image Gallery */}
+        <div className="space-y-4">
+          {/* Main Image */}
+          <div className="relative aspect-square bg-transparent">
+            {currentImage && !imageError ? (
+              <>
+                {isImageLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-zinc-500 text-sm">Loading...</span>
+                  </div>
+                )}
+                <img
+                  src={currentImage}
+                  alt={`${product.name} - Image ${currentImageIndex + 1}`}
+                  className={`absolute inset-0 w-full h-full object-cover opacity-80 hover:opacity-100
+                    transition-all duration-700 ease-out ${isImageLoading ? 'opacity-0' : 'opacity-80'}`}
+                  onError={() => setImageError(true)}
+                  onLoad={() => setIsImageLoading(false)}
+                />
+                
+                {/* Sold Out Overlay */}
+                {isSoldOut && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 z-10">
+                    <span className="text-white text-2xl font-bold uppercase tracking-widest">Sold Out</span>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="text-zinc-500 text-sm">
+                  {imageError ? 'Failed to load image' : 'No image available'}
+                </span>
+              </div>
+            )}
+          </div>
+          
+          {/* Thumbnail Gallery */}
+          {images.length > 1 && (
+            <div className="flex overflow-x-auto space-x-2 py-2">
+              {images.map((img, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setCurrentImageIndex(index);
+                    setImageError(false);
+                    setIsImageLoading(true);
+                  }}
+                  className={`relative w-16 h-16 flex-shrink-0 border-2 ${
+                    index === currentImageIndex ? 'border-white' : 'border-transparent'
+                  }`}
+                >
+                  <img
+                    src={img}
+                    alt={`${product.name} thumbnail ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Hide just this thumbnail on error
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                </button>
+              ))}
             </div>
           )}
         </div>
@@ -133,55 +168,55 @@ export default function ProductDisplay({ product }: Props) {
           </div>
 
           <div className="space-y-4 mt-8">
-            {product.stock !== undefined && (
-              <p className="text-sm text-zinc-400 uppercase tracking-wider">
-                {product.stock} Available
-              </p>
-            )}
+            {/* Availability Status */}
+            <p className="text-sm text-zinc-400 uppercase tracking-wider">
+              {isSoldOut ? (
+                <span className="text-red-500">Sold Out</span>
+              ) : (
+                product.stock !== undefined ? `${product.stock} Available` : 'Available'
+              )}
+            </p>
             
-            <div className="flex items-center gap-4 mb-4">
-              <div className="flex items-center border border-zinc-800 rounded-md">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-3 py-2 text-zinc-400 hover:text-white transition-colors"
-                  disabled={quantity <= 1}
-                >
-                  -
-                </button>
-                <span className="w-12 text-center">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="px-3 py-2 text-zinc-400 hover:text-white transition-colors"
-                  disabled={product.stock !== undefined && quantity >= product.stock}
-                >
-                  +
-                </button>
+            {/* Quantity Selector - Only show if not sold out */}
+            {!isSoldOut && (
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center border border-zinc-800 rounded-md">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="px-3 py-2 text-zinc-400 hover:text-white transition-colors"
+                    disabled={quantity <= 1}
+                  >
+                    -
+                  </button>
+                  <span className="w-12 text-center">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="px-3 py-2 text-zinc-400 hover:text-white transition-colors"
+                    disabled={product.stock !== undefined && quantity >= product.stock}
+                  >
+                    +
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="flex flex-col space-y-4">
-              <button
-                onClick={handleAddToCart}
-                disabled={isAdding || (product.stock !== undefined && quantity > product.stock)}
-                className="relative select-none cursor-pointer px-8 py-3 text-sm uppercase tracking-[0.2em] text-zinc-400 hover:text-white transition-colors duration-500 ease-out disabled:opacity-50 disabled:cursor-not-allowed group"
-              >
-                <div className="absolute inset-0 border border-zinc-800 group-hover:border-zinc-700 transition-colors duration-500" />
-                <div className="relative">
-                  {isAdding ? 'Adding...' : 'Add to Cart'}
-                </div>
-              </button>
-              
+              {/* Buy Now Button - Disabled if sold out */}
               <button
                 onClick={handleBuyNow}
-                disabled={isBuying || (product.stock !== undefined && quantity > product.stock)}
-                className="relative select-none cursor-pointer px-8 py-3 text-sm uppercase tracking-[0.2em] transition-all duration-500 ease-out disabled:opacity-50 disabled:cursor-not-allowed group"
+                disabled={isSoldOut || isBuying || (product.stock !== undefined && quantity > product.stock)}
+                className={`relative select-none cursor-pointer px-8 py-3 text-sm uppercase tracking-[0.2em] transition-all duration-500 ease-out disabled:opacity-50 disabled:cursor-not-allowed group ${
+                  isSoldOut ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
               >
-                <div className="absolute inset-0 bg-white opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="absolute inset-0 blur-xl opacity-30 bg-white group-hover:opacity-40 transition-opacity duration-500" />
-                <div className="relative text-black">
-                  {isBuying ? 'Processing...' : 'Buy Now'}
+                <div className={`absolute inset-0 ${isSoldOut ? 'bg-zinc-800' : 'bg-white opacity-90 group-hover:opacity-100'} transition-opacity duration-500`} />
+                <div className={`absolute inset-0 blur-xl opacity-30 ${isSoldOut ? 'bg-zinc-800' : 'bg-white'} group-hover:opacity-40 transition-opacity duration-500`} />
+                <div className={`relative ${isSoldOut ? 'text-zinc-500' : 'text-black'}`}>
+                  {isBuying ? 'Processing...' : isSoldOut ? 'Sold Out' : 'Buy Now'}
                 </div>
-                <div className="absolute inset-0 opacity-0 animate-[flicker_4s_infinite] bg-white/50 mix-blend-overlay" />
+                {!isSoldOut && (
+                  <div className="absolute inset-0 opacity-0 animate-[flicker_4s_infinite] bg-white/50 mix-blend-overlay" />
+                )}
               </button>
             </div>
           </div>
@@ -189,4 +224,4 @@ export default function ProductDisplay({ product }: Props) {
       </div>
     </main>
   );
-} 
+}

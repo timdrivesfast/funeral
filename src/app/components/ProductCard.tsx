@@ -2,15 +2,16 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface Product {
   id: string;
   name: string;
   description?: string;
   price: number;
-  stock: number;
+  stock?: number;
   image_url?: string;
+  image_urls?: string[];
   category?: string;
 }
 
@@ -22,6 +23,30 @@ export default function ProductCard({ product }: Props) {
   const { id, name, price, image_url, category, stock } = product
   const [imageError, setImageError] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
+  const [finalImageUrl, setFinalImageUrl] = useState(image_url);
+  
+  // Add a timestamp to the image URL to prevent caching issues
+  useEffect(() => {
+    if (image_url) {
+      setFinalImageUrl(`${image_url}?t=${Date.now()}`);
+    }
+  }, [image_url]);
+  
+  // Handle image retry logic
+  const handleImageError = () => {
+    console.error(`Failed to load image for product: ${name} (${id}), URL: ${finalImageUrl}`);
+    
+    if (retryCount < 2 && image_url) {
+      // Retry loading the image with a new timestamp
+      setRetryCount(prev => prev + 1);
+      setFinalImageUrl(`${image_url}?retry=${retryCount + 1}&t=${Date.now()}`);
+      console.log(`Retrying image load (attempt ${retryCount + 1}): ${finalImageUrl}`);
+    } else {
+      setImageError(true);
+      setIsImageLoading(false);
+    }
+  };
   
   return (
     <Link 
@@ -31,7 +56,7 @@ export default function ProductCard({ product }: Props) {
     >
       {/* Image Container */}
       <div className="relative w-full h-full">
-        {image_url && !imageError ? (
+        {finalImageUrl && !imageError ? (
           <>
             {isImageLoading && (
               <div className="absolute inset-0 bg-zinc-900/30 flex items-center justify-center">
@@ -39,12 +64,15 @@ export default function ProductCard({ product }: Props) {
               </div>
             )}
             <img
-              src={image_url}
+              src={finalImageUrl}
               alt={name}
               className={`absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100
                 transition-all duration-700 ease-out ${isImageLoading ? 'opacity-0' : 'opacity-80'}`}
-              onError={() => setImageError(true)}
-              onLoad={() => setIsImageLoading(false)}
+              onError={handleImageError}
+              onLoad={() => {
+                console.log(`Image loaded successfully for product: ${name}`);
+                setIsImageLoading(false);
+              }}
             />
           </>
         ) : (
@@ -78,7 +106,7 @@ export default function ProductCard({ product }: Props) {
                 View Details →
               </span>
             </div>
-            {stock !== undefined && stock > 0 && (
+            {stock !== undefined && stock !== null && stock > 0 && (
               <p className="text-xs text-zinc-400 uppercase tracking-wider">
                 {stock} Available
               </p>
@@ -88,4 +116,4 @@ export default function ProductCard({ product }: Props) {
       </div>
     </Link>
   )
-} 
+}

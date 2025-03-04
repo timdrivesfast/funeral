@@ -9,8 +9,9 @@ interface Product {
   name: string;
   description?: string;
   price: number;
-  stock: number;
+  stock?: number;
   image_url?: string;
+  image_urls?: string[];
   category?: string;
 }
 
@@ -39,11 +40,13 @@ function transformSquareItem(item: Square.CatalogObject & { quantity: number }, 
 
   // Find the image object and get its URL
   const imageId = itemData.imageIds?.[0];
-  const imageObject = relatedObjects?.find(obj => 
-    obj.type === 'IMAGE' && obj.id === imageId
-  );
+  
+  // Log the image information for debugging
+  console.log(`Product ${itemData.name} (${item.id}) has imageId: ${imageId}`);
+  
+  // If we have an imageId, construct the URL to our API endpoint
   const imageUrl = imageId ? `/api/images/${imageId}` : undefined;
-
+  
   return {
     id: item.id,
     name: itemData.name || '',
@@ -70,11 +73,18 @@ export default function ProductGrid({ category }: { category?: string }) {
           console.error('API Error Response:', errorData);
           throw new Error(errorData.error || 'Failed to fetch products');
         }
-        const data = await response.json();
-        console.log('Products Response:', data);
-        setProducts(data.items.map((item: Square.CatalogObject & { quantity: number }) => 
-          transformSquareItem(item, data.relatedObjects)
-        ));
+        
+        // Get the products directly from the API response
+        const products = await response.json();
+        console.log('Products Response:', products);
+        
+        // Check if products is an array
+        if (!Array.isArray(products)) {
+          throw new Error('Invalid response format: expected an array of products');
+        }
+        
+        // Set the products directly
+        setProducts(products);
       } catch (err) {
         console.error('Detailed fetch error:', err);
         setError(err instanceof Error ? err.message : 'Failed to load products.');
@@ -123,4 +133,4 @@ export default function ProductGrid({ category }: { category?: string }) {
       )}
     </div>
   );
-} 
+}

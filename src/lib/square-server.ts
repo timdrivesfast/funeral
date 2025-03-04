@@ -141,7 +141,7 @@ export async function getCatalogItemsWithInventory() {
     return items.map((item: Square.CatalogObject) => {
       const itemWithQuantity = {
         ...item,
-        quantity: inventoryMap.get(item.id) || 0
+        quantity: inventoryMap.has(item.id) ? inventoryMap.get(item.id) : undefined
       };
 
       // Convert any BigInt values to strings

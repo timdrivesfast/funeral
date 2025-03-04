@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 import { squareClient } from '@/src/lib/square-server';
 
+// In Next.js App Router, dynamic route params need to be properly handled
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
+    // Properly extract the id parameter
+    const id = context.params.id;
+    
     const catalogResponse = await squareClient.catalog.search({
       objectTypes: ['IMAGE']
     });
@@ -17,7 +21,7 @@ export async function GET(
     ));
 
     const image = serializedResponse.objects?.find(
-      (obj: any) => obj.id === params.id && obj.type === 'IMAGE'
+      (obj: any) => obj.id === id && obj.type === 'IMAGE'
     );
 
     if (!image?.imageData?.url) {
@@ -35,4 +39,4 @@ export async function GET(
       { status: 500 }
     );
   }
-} 
+}

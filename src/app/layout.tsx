@@ -4,7 +4,6 @@ import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import { CartProvider } from '@/src/contexts/CartContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,15 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className={`${inter.className} min-h-screen bg-black text-white`}>
-        <CartProvider>
-          <Header />
-          <div className="pt-16">
-            {children}
-          </div>
-          <Footer />
-        </CartProvider>
+        <Header />
+        <div className="pt-16">
+          {children}
+        </div>
+        <Footer />
         <Analytics />
       </body>
     </html>
   )
-} 
+}

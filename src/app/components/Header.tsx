@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import Cart from './Cart'
 
 export default function Header() {
   const pathname = usePathname()
@@ -47,9 +46,8 @@ export default function Header() {
           >
             Packaging
           </Link>
-          <Cart />
         </nav>
       )}
     </header>
   );
-} 
+}

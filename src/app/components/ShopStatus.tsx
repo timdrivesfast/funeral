@@ -6,20 +6,31 @@ import Subscribe from './Subscribe';
 
 export default function ShopStatus() {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true); 
   const [isLoaded, setIsLoaded] = useState(false);
   const [showSubscribe, setShowSubscribe] = useState(false);
 
   useEffect(() => {
-    setIsOpen(false);
-    setIsLoaded(true);
+    const storedShopStatus = localStorage.getItem('shopStatus');
     
-    const interval = setInterval(() => {
-      setIsOpen(false);
-    }, 60000);
-
-    return () => clearInterval(interval);
+    if (storedShopStatus !== null) {
+      setIsOpen(storedShopStatus === 'open');
+    } else {
+      localStorage.setItem('shopStatus', 'open');
+    }
+    
+    setIsLoaded(true);
   }, []);
+
+  const toggleShopStatus = () => {
+    const newStatus = !isOpen;
+    setIsOpen(newStatus);
+    localStorage.setItem('shopStatus', newStatus ? 'open' : 'closed');
+    
+    if (newStatus) {
+      router.push('/products');
+    }
+  };
 
   const handleClick = () => {
     if (isOpen) {
@@ -91,4 +102,4 @@ export default function ShopStatus() {
       )}
     </>
   );
-} 
+}
