@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { squareClient, getCatalogItemsWithInventory } from '@/src/lib/square-server';
 
 export async function GET(request: Request) {
+  console.log('API: /api/products GET request received');
+  
   try {
     // Test Square API connection
     try {
@@ -15,87 +17,88 @@ export async function GET(request: Request) {
     }
 
     // Get catalog items with inventory
-    const items = await getCatalogItemsWithInventory();
-    
+    const catalogItems = await getCatalogItemsWithInventory();
+    console.log(`API: Retrieved ${catalogItems.length} catalog items with inventory`);
+
+    // Transform catalog items to products
+    const products = catalogItems
+      .filter((item: any) => {
+        const isItem = item.type === 'ITEM';
+        console.log(`API: Item ${item.id} (${item.itemData?.name}) type: ${item.type}, isItem: ${isItem}`);
+        return isItem;
+      })
+      .map((item: any) => {
+        // Extract item data
+        const { id, itemData, quantity } = item;
+        
+        // Log the raw quantity value
+        console.log(`API: Processing item ${id} (${itemData?.name}), raw quantity: ${quantity}, type: ${typeof quantity}`);
+        
+        // Convert quantity to a number for stock
+        let stock: number | undefined = undefined;
+        
+        if (quantity !== undefined) {
+          // Handle both string and number types
+          if (typeof quantity === 'string') {
+            // Trim any whitespace and parse as integer
+            stock = parseInt(quantity.trim(), 10);
+            console.log(`API: Converted string quantity "${quantity}" to number ${stock}`);
+          } else {
+            stock = Number(quantity);
+            console.log(`API: Converted quantity ${quantity} to stock ${stock}`);
+          }
+          
+          // Check for NaN
+          if (isNaN(stock)) {
+            console.log(`API: Quantity "${quantity}" converted to NaN, setting to undefined`);
+            stock = undefined;
+          }
+        } else {
+          console.log(`API: Item ${id} (${itemData?.name}) has undefined quantity`);
+        }
+
+        // Extract image URLs
+        const imageIds = itemData?.imageIds || [];
+        const image_urls = imageIds.map((imageId: string) => `/api/images/${imageId}`);
+        
+        // Extract variations
+        const variations = itemData?.variations || [];
+        const firstVariation = variations[0];
+        const price = firstVariation?.itemVariationData?.priceMoney?.amount || 0;
+        
+        // Create product object
+        const product = {
+          id,
+          name: itemData?.name || '',
+          description: itemData?.description || '',
+          price: price / 100, // Convert cents to dollars
+          stock,
+          image_url: image_urls[0] || null,
+          image_urls: image_urls.length > 0 ? image_urls : null,
+          category: itemData?.category || 'Uncategorized',
+        };
+        
+        console.log(`API: Transformed product ${id} (${product.name}): stock=${product.stock}, price=${product.price}`);
+        return product;
+      });
+
     // Log inventory data for debugging
     console.log('Raw inventory data from Square:');
-    items.forEach(item => {
+    catalogItems.forEach(item => {
       if (item.itemData?.name) {
         console.log(`Product: ${item.itemData.name}, ID: ${item.id}, Stock: ${item.quantity === undefined ? 'undefined' : item.quantity === null ? 'null' : item.quantity}`);
       }
     });
-    
+
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
     
-    // Filter and transform items
-    const products = items
-      .filter(item => {
-        // Filter by category if specified
-        if (category && item.itemData?.categoryId) {
-          // We would need to check the category name from related objects
-          // For now, we'll just pass all items since we don't have category info
-          return true;
-        }
-        return true;
-      })
-      .map(item => {
-        // Get variation data for price
-        const variation = item.itemData?.variations?.[0]?.itemVariationData;
-        const price = variation?.priceMoney?.amount 
-          ? Number(variation.priceMoney.amount) 
-          : 0;
-        
-        // Get image IDs
-        const imageIds = item.itemData?.imageIds || [];
-        
-        // Get image URLs from image IDs
-        const imageUrls = imageIds.map(
-          (imageId: string) => `/api/images/${imageId}`
-        );
-        
-        // Get primary image URL
-        const imageUrl = imageUrls.length > 0 ? imageUrls[0] : undefined;
-        
-        // Get stock level from inventory data
-        // If stock is not tracked, it will be undefined (which means available)
-        const stock = typeof item.quantity === 'string' 
-          ? parseInt(item.quantity, 10) 
-          : (item.quantity !== undefined ? item.quantity : undefined);
-        
-        console.log(`Transformed stock for ${item.itemData?.name}: ${stock} (original: ${item.quantity})`);
-        
-        return {
-          id: item.id,
-          name: item.itemData?.name || 'Unnamed Product',
-          description: item.itemData?.description,
-          price,
-          stock,
-          image_url: imageUrl,
-          image_urls: imageUrls.length > 0 ? imageUrls : undefined,
-          category: 'All Products' // We'll use a default category for now
-        }
-      })
-      // Sort products by name to match Square dashboard order
-      .sort((a, b) => {
-        // Extract numeric part from product names (e.g., "V1.01" -> 1.01)
-        const getNumericValue = (name: string) => {
-          const match = name.match(/V(\d+\.\d+)/);
-          return match ? parseFloat(match[1]) : Infinity;
-        };
-        
-        const numA = getNumericValue(a.name);
-        const numB = getNumericValue(b.name);
-        
-        // Sort by numeric value if both have valid numeric parts
-        if (numA !== Infinity && numB !== Infinity) {
-          return numA - numB;
-        }
-        
-        // Fall back to alphabetical sorting
-        return a.name.localeCompare(b.name);
-      });
-    
+    // Filter by category if specified
+    if (category) {
+      products.filter(product => product.category === category);
+    }
+
+    console.log(`API: Returning ${products.length} products`);
     return NextResponse.json(products, {
       headers: {
         'Cache-Control': 'no-store, max-age=0, must-revalidate',

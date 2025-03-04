@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface Product {
   id: string;
@@ -34,6 +34,8 @@ function formatProductDetails(description: string = '') {
 }
 
 export default function ProductDisplay({ product }: Props) {
+  console.log('ProductDisplay rendering with product:', JSON.stringify(product, null, 2));
+  
   const [imageError, setImageError] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [quantity] = useState(1); 
@@ -47,8 +49,15 @@ export default function ProductDisplay({ product }: Props) {
   
   // Check if product is sold out (stock is explicitly 0)
   // If stock is undefined or null, we assume it's available
-  const isSoldOut = product.stock === 0 || product.stock === '0';
+  const isSoldOut = product.stock === 0 || product.stock === '0' || 
+                   (typeof product.stock === 'string' && product.stock.trim() === '0');
+  
   console.log(`ProductDisplay - Product: ${product.name}, Stock: ${product.stock}, Type: ${typeof product.stock}, isSoldOut: ${isSoldOut}`);
+  
+  useEffect(() => {
+    console.log(`ProductDisplay useEffect - Re-checking stock: ${product.stock}, Type: ${typeof product.stock}`);
+    // This is just to log the current value, no action needed
+  }, [product.stock]);
 
   const handleBuyNow = async () => {
     setIsBuying(true);

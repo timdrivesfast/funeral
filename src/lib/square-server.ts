@@ -151,6 +151,8 @@ export async function createPaymentLink({
 // Get catalog items with inventory
 export async function getCatalogItemsWithInventory() {
   try {
+    console.log('Starting getCatalogItemsWithInventory function...');
+    
     // First, get catalog items
     const catalogResponse = await squareClient.catalog.search({
       objectTypes: ['ITEM'],
@@ -164,9 +166,11 @@ export async function getCatalogItemsWithInventory() {
     , 2));
 
     const items = catalogResponse.objects || [];
+    console.log(`Found ${items.length} catalog items`);
     
     // Then, get inventory for these items
     const itemIds = items.map((item: Square.CatalogObject) => item.id).filter((id): id is string => id !== undefined);
+    console.log(`Getting inventory for ${itemIds.length} items:`, itemIds);
     
     // Add timestamp to ensure we're not getting cached data
     const timestamp = new Date().toISOString();
@@ -184,11 +188,18 @@ export async function getCatalogItemsWithInventory() {
 
     // Combine catalog and inventory data
     const inventoryMap = new Map(
-      (inventoryResponse.data || []).map((count: Square.InventoryCount) => [
-        count.catalogObjectId,
-        count.quantity
-      ])
+      (inventoryResponse.data || []).map((count: Square.InventoryCount) => {
+        console.log(`Inventory for item ${count.catalogObjectId}: ${count.quantity} (${typeof count.quantity})`);
+        return [count.catalogObjectId, count.quantity];
+      })
     );
+
+    console.log('Inventory map created with', inventoryMap.size, 'items');
+    
+    // Log which items have inventory and which don't
+    itemIds.forEach(id => {
+      console.log(`Item ${id} inventory: ${inventoryMap.has(id) ? inventoryMap.get(id) : 'not found in inventory'}`);
+    });
 
     // Convert BigInt to string in the response
     return items.map((item: Square.CatalogObject) => {
@@ -196,6 +207,9 @@ export async function getCatalogItemsWithInventory() {
         ...item,
         quantity: inventoryMap.has(item.id) ? inventoryMap.get(item.id) : undefined
       };
+
+      // Log the final item with quantity
+      console.log(`Final item ${item.id} (${item.itemData?.name}): quantity = ${itemWithQuantity.quantity}`);
 
       // Convert any BigInt values to strings
       return JSON.parse(JSON.stringify(itemWithQuantity, (key, value) =>

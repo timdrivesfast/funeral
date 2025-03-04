@@ -6,7 +6,9 @@ interface Props {
 }
 
 export default async function ProductsPage({ searchParams }: Props) {
-  const category = typeof searchParams.category === 'string' ? searchParams.category : undefined;
+  // Await searchParams before accessing its properties
+  const params = await searchParams;
+  const category = typeof params.category === 'string' ? params.category : undefined;
   const title = category ? `${category.charAt(0).toUpperCase()}${category.slice(1)}` : 'Products'
 
   return (

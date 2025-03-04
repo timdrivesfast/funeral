@@ -106,7 +106,7 @@ export default function ProductCard({ product }: Props) {
                 View Details →
               </span>
             </div>
-            {(stock === 0 || stock === '0') && (
+            {(stock === 0 || stock === '0' || (typeof stock === 'string' && stock.trim() === '0')) && (
               <p className="text-xs text-red-500 uppercase tracking-wider font-medium">
                 Sold Out
               </p>
