@@ -118,7 +118,11 @@ export async function createPaymentLink({
           {
             title: 'Special Instructions',
           }
-        ]
+        ],
+        acceptedPaymentMethods: {
+          applePay: true,
+          googlePay: true
+        }
       }
     };
 
