@@ -60,7 +60,14 @@ async function getProduct(id: Promise<string>) {
 
     const itemData = product.itemData
     const variation = itemData?.variations?.[0]
-    const price = variation?.type === 'ITEM_VARIATION' ? Number(variation.itemVariationData?.priceMoney?.amount) / 100 || 0 : 0
+    // Ensure we're correctly handling the price from Square
+    let price = 0;
+    if (variation?.type === 'ITEM_VARIATION' && variation.itemVariationData?.priceMoney?.amount) {
+      // Convert from cents to dollars
+      const priceInCents = variation.itemVariationData.priceMoney.amount;
+      price = Number(priceInCents) / 100;
+      console.log(`Price for ${itemData?.name}: ${priceInCents} cents = $${price.toFixed(2)}`);
+    }
     
     // Get all image URLs instead of just the first one
     const imageUrls = itemData?.imageIds?.map(imageId => `/api/images/${imageId}`) || [];
@@ -82,7 +89,7 @@ async function getProduct(id: Promise<string>) {
     return {
       id: product.id,
       name: itemData?.name || '',
-      description: itemData?.description || '',
+      description: itemData?.description?.replace(/\r\n/g, '\n').trim() || '',
       price: price.toFixed(2), // Format price to two decimal places
       stock: stockValue,
       image_url: imageUrls[0] || '', // Keep the main image URL for backward compatibility

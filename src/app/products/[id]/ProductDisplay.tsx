@@ -20,13 +20,20 @@ interface Props {
 function formatProductDetails(description: string = '') {
   const details: Record<string, string> = {};
   
-  // Split the description by newlines or periods
-  const lines = description.split(/[\n.]/).map(line => line.trim()).filter(Boolean);
+  // Split the description by newlines only
+  const lines = description.split(/\n/).map(line => line.trim()).filter(Boolean);
   
   lines.forEach(line => {
-    const [key, value] = line.split(':').map(part => part.trim());
-    if (key && value) {
-      details[key.toUpperCase()] = value;
+    // Look for the first colon in the line
+    const colonIndex = line.indexOf(':');
+    if (colonIndex > 0) {
+      const key = line.substring(0, colonIndex).trim();
+      const value = line.substring(colonIndex + 1).trim();
+      
+      if (key && value) {
+        // Store the key in uppercase for consistent display
+        details[key.toUpperCase()] = value;
+      }
     }
   });
 
@@ -46,7 +53,7 @@ export default function ProductDisplay({ product }: Props) {
   // Format price for display
   const formattedPrice = typeof product.price === 'string' 
     ? `$${parseFloat(product.price).toFixed(2)}` 
-    : `$${product.price.toFixed(2)}`;
+    : `$${(product.price || 0).toFixed(2)}`;
     
   console.log(`ProductDisplay - Product: ${product.name}, Price: ${product.price}, Type: ${typeof product.price}, Formatted: ${formattedPrice}`);
   
@@ -177,11 +184,11 @@ export default function ProductDisplay({ product }: Props) {
             </div>
 
             {/* Formatted Product Details */}
-            <div className="space-y-4">
+            <div className="space-y-6">
               {Object.entries(details).map(([key, value]) => (
                 <div key={key} className="flex flex-col">
                   <dt className="text-sm text-zinc-400 uppercase tracking-wider">{key}</dt>
-                  <dd className="text-white">{value}</dd>
+                  <dd className="text-white text-lg">{value}</dd>
                 </div>
               ))}
             </div>

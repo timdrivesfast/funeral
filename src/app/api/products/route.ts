@@ -64,18 +64,24 @@ export async function GET(request: Request) {
         // Extract variations
         const variations = itemData?.variations || [];
         const firstVariation = variations[0];
-        const priceInCents = firstVariation?.itemVariationData?.priceMoney?.amount || 0;
         
-        // Convert cents to dollars and format to 2 decimal places
-        const price = parseFloat(priceInCents.toString()) / 100;
-        console.log(`API: Item ${id} (${itemData?.name}) price: ${priceInCents} cents = $${price.toFixed(2)}`);
+        // Get price in cents from Square
+        let price = 0;
+        if (firstVariation?.itemVariationData?.priceMoney?.amount) {
+          const priceInCents = firstVariation.itemVariationData.priceMoney.amount;
+          // Convert cents to dollars
+          price = Number(priceInCents) / 100;
+          console.log(`API: Item ${id} (${itemData?.name}) price: ${priceInCents} cents = $${price.toFixed(2)}`);
+        } else {
+          console.log(`API: Item ${id} (${itemData?.name}) has no price information`);
+        }
         
         // Create product object
         const product = {
           id,
           name: itemData?.name || '',
           description: itemData?.description || '',
-          price: price, // Price in dollars
+          price,
           stock,
           image_url: image_urls[0] || null,
           image_urls: image_urls.length > 0 ? image_urls : null,
