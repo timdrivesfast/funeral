@@ -114,11 +114,6 @@ export async function createPaymentLink({
         merchantSupportEmail: 'funeral.supply@gmail.com',
         allowTipping: false,
         enableCoupon: false,
-        customFields: [
-          {
-            title: 'Special Instructions',
-          }
-        ],
         acceptedPaymentMethods: {
           applePay: true,
           googlePay: true
