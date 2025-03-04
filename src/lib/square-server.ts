@@ -83,6 +83,11 @@ export async function createPaymentLink({
           currency: currency as Square.Currency
         },
         locationId: process.env.SQUARE_LOCATION_ID!
+      },
+      checkoutOptions: {
+        askForShippingAddress: true,
+        redirectUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://funeral.supply',
+        merchantSupportEmail: 'funeral.supply@gmail.com'
       }
     };
 
