@@ -287,4 +287,75 @@ export async function upsertCatalogItem({
     }
     throw error;
   }
-} 
+}
+
+// Update inventory for a specific item
+export async function updateInventory({
+  catalogObjectId,
+  quantity,
+  fromState = 'IN_STOCK'
+}: {
+  catalogObjectId: string;
+  quantity: number;
+  fromState?: string;
+}) {
+  try {
+    // Get the current inventory count first
+    const inventoryResponse = await squareClient.inventory.batchGetCounts({
+      catalogObjectIds: [catalogObjectId],
+      locationIds: [process.env.SQUARE_LOCATION_ID!]
+    });
+
+    console.log('Current inventory:', JSON.stringify(inventoryResponse, (key, value) =>
+      typeof value === 'bigint' ? value.toString() : value
+    , 2));
+
+    // Calculate the adjustment quantity
+    let currentQuantity = 0;
+    if (inventoryResponse.data && inventoryResponse.data.length > 0) {
+      currentQuantity = parseInt(inventoryResponse.data[0].quantity || '0', 10);
+    }
+    
+    // If we're setting to a specific quantity, calculate the adjustment
+    const adjustment = quantity - currentQuantity;
+    
+    if (adjustment === 0) {
+      console.log(`No adjustment needed for item ${catalogObjectId}. Current quantity: ${currentQuantity}`);
+      return { success: true, message: 'No adjustment needed' };
+    }
+
+    // Create the adjustment
+    const response = await squareClient.inventory.adjustInventory({
+      idempotencyKey: crypto.randomUUID(),
+      adjustment: {
+        catalogObjectId,
+        locationId: process.env.SQUARE_LOCATION_ID!,
+        fromState: fromState as Square.InventoryState,
+        toState: 'IN_STOCK',
+        quantity: Math.abs(adjustment).toString(),
+        occurredAt: new Date().toISOString()
+      }
+    });
+
+    console.log('Inventory adjustment response:', JSON.stringify(response, (key, value) =>
+      typeof value === 'bigint' ? value.toString() : value
+    , 2));
+
+    return { 
+      success: true, 
+      message: `Inventory adjusted by ${adjustment} units`,
+      data: response
+    };
+  } catch (error) {
+    console.error('Error updating inventory:', error);
+    if (error && typeof error === 'object' && 'errors' in error) {
+      const squareError = error as { errors: Array<{ message: string }> };
+      console.error('Square API Error:', squareError.errors);
+    }
+    return { 
+      success: false, 
+      message: 'Failed to update inventory',
+      error
+    };
+  }
+}
