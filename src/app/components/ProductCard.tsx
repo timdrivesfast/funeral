@@ -9,7 +9,7 @@ interface Product {
   name: string;
   description?: string;
   price: number;
-  stock?: number;
+  stock?: number | string;
   image_url?: string;
   image_urls?: string[];
   category?: string;
@@ -106,7 +106,7 @@ export default function ProductCard({ product }: Props) {
                 View Details →
               </span>
             </div>
-            {stock !== undefined && stock !== null && stock === 0 && (
+            {(stock === 0 || stock === '0') && (
               <p className="text-xs text-red-500 uppercase tracking-wider font-medium">
                 Sold Out
               </p>

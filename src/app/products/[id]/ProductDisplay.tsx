@@ -7,7 +7,7 @@ interface Product {
   name: string;
   description?: string;
   price: number;
-  stock?: number;
+  stock?: number | string;
   image_url?: string;
   image_urls?: string[]; 
   category?: string;
@@ -47,8 +47,8 @@ export default function ProductDisplay({ product }: Props) {
   
   // Check if product is sold out (stock is explicitly 0)
   // If stock is undefined or null, we assume it's available
-  const isSoldOut = product.stock === 0;
-  console.log(`ProductDisplay - Product: ${product.name}, Stock: ${product.stock}, isSoldOut: ${isSoldOut}`);
+  const isSoldOut = product.stock === 0 || product.stock === '0';
+  console.log(`ProductDisplay - Product: ${product.name}, Stock: ${product.stock}, Type: ${typeof product.stock}, isSoldOut: ${isSoldOut}`);
 
   const handleBuyNow = async () => {
     setIsBuying(true);
