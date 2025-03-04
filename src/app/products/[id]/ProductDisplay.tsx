@@ -48,6 +48,7 @@ export default function ProductDisplay({ product }: Props) {
   // Check if product is sold out (stock is explicitly 0)
   // If stock is undefined or null, we assume it's available
   const isSoldOut = product.stock === 0;
+  console.log(`ProductDisplay - Product: ${product.name}, Stock: ${product.stock}, isSoldOut: ${isSoldOut}`);
 
   const handleBuyNow = async () => {
     setIsBuying(true);

@@ -17,6 +17,14 @@ export async function GET(request: Request) {
     // Get catalog items with inventory
     const items = await getCatalogItemsWithInventory();
     
+    // Log inventory data for debugging
+    console.log('Raw inventory data from Square:');
+    items.forEach(item => {
+      if (item.itemData?.name) {
+        console.log(`Product: ${item.itemData.name}, ID: ${item.id}, Stock: ${item.quantity === undefined ? 'undefined' : item.quantity === null ? 'null' : item.quantity}`);
+      }
+    });
+    
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
     
@@ -54,6 +62,8 @@ export async function GET(request: Request) {
         const stock = typeof item.quantity === 'string' 
           ? parseInt(item.quantity, 10) 
           : (item.quantity !== undefined ? item.quantity : undefined);
+        
+        console.log(`Transformed stock for ${item.itemData?.name}: ${stock} (original: ${item.quantity})`);
         
         return {
           id: item.id,
