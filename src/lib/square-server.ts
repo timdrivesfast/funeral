@@ -117,6 +117,13 @@ export async function createPaymentLink({
         acceptedPaymentMethods: {
           applePay: true,
           googlePay: true
+        },
+        emailCollectionSettings: {
+          enabled: true,
+          required: true
+        },
+        phoneNumberCollectionSettings: {
+          enabled: false
         }
       }
     };
