@@ -36,7 +36,7 @@ function formatProductDetails(description: string = '') {
 export default function ProductDisplay({ product }: Props) {
   const [imageError, setImageError] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity] = useState(1); 
   const [isBuying, setIsBuying] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const details = formatProductDetails(product.description);
@@ -173,7 +173,7 @@ export default function ProductDisplay({ product }: Props) {
               {isSoldOut ? (
                 <span className="text-red-500">Sold Out</span>
               ) : (
-                product.stock !== undefined ? `${product.stock} Available` : 'Available'
+                "Available"
               )}
             </p>
             
@@ -182,17 +182,15 @@ export default function ProductDisplay({ product }: Props) {
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center border border-zinc-800 rounded-md">
                   <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-3 py-2 text-zinc-400 hover:text-white transition-colors"
-                    disabled={quantity <= 1}
+                    className="px-3 py-2 text-zinc-400 transition-colors cursor-not-allowed opacity-50"
+                    disabled={true}
                   >
                     -
                   </button>
                   <span className="w-12 text-center">{quantity}</span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="px-3 py-2 text-zinc-400 hover:text-white transition-colors"
-                    disabled={product.stock !== undefined && quantity >= product.stock}
+                    className="px-3 py-2 text-zinc-400 transition-colors cursor-not-allowed opacity-50"
+                    disabled={true}
                   >
                     +
                   </button>
@@ -204,7 +202,7 @@ export default function ProductDisplay({ product }: Props) {
               {/* Buy Now Button - Disabled if sold out */}
               <button
                 onClick={handleBuyNow}
-                disabled={isSoldOut || isBuying || (product.stock !== undefined && quantity > product.stock)}
+                disabled={isSoldOut || isBuying}
                 className={`relative select-none cursor-pointer px-8 py-3 text-sm uppercase tracking-[0.2em] transition-all duration-500 ease-out disabled:opacity-50 disabled:cursor-not-allowed group ${
                   isSoldOut ? 'opacity-50 cursor-not-allowed' : ''
                 }`}

@@ -65,6 +65,25 @@ export async function GET(request: Request) {
           image_urls: imageUrls.length > 0 ? imageUrls : undefined,
           category: 'All Products' // We'll use a default category for now
         }
+      })
+      // Sort products by name to match Square dashboard order
+      .sort((a, b) => {
+        // Extract numeric part from product names (e.g., "V1.01" -> 1.01)
+        const getNumericValue = (name: string) => {
+          const match = name.match(/V(\d+\.\d+)/);
+          return match ? parseFloat(match[1]) : Infinity;
+        };
+        
+        const numA = getNumericValue(a.name);
+        const numB = getNumericValue(b.name);
+        
+        // Sort by numeric value if both have valid numeric parts
+        if (numA !== Infinity && numB !== Infinity) {
+          return numA - numB;
+        }
+        
+        // Fall back to alphabetical sorting
+        return a.name.localeCompare(b.name);
       });
     
     return NextResponse.json(products);
