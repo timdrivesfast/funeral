@@ -106,9 +106,9 @@ export default function ProductCard({ product }: Props) {
                 View Details →
               </span>
             </div>
-            {stock !== undefined && stock !== null && stock > 0 && (
-              <p className="text-xs text-zinc-400 uppercase tracking-wider">
-                {stock} Available
+            {stock !== undefined && stock !== null && stock === 0 && (
+              <p className="text-xs text-red-500 uppercase tracking-wider font-medium">
+                Sold Out
               </p>
             )}
           </div>
