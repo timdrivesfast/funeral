@@ -29,11 +29,15 @@ export async function POST(request: Request) {
     const itemData = product.itemData
     const variation = itemData?.variations?.[0]?.itemVariationData
     const price = variation?.priceMoney?.amount ? Number(variation.priceMoney.amount) : 0
+    const productName = itemData?.name || 'Product Purchase'
+    const productDescription = itemData?.description || ''
 
-    // Create Square payment link
+    // Create Square payment link with enhanced product details
     const paymentLink = await createPaymentLink({
       amount: price * quantity,
-      orderName: itemData?.name || 'Product Purchase'
+      orderName: productName,
+      description: productDescription,
+      productId: productId
     })
 
     if (!paymentLink?.url) {

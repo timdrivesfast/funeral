@@ -67,13 +67,37 @@ export async function processPayment({
 export async function createPaymentLink({
   amount,
   currency = 'USD',
-  orderName = 'Online Order'
+  orderName = 'Online Order',
+  description = '',
+  productId = ''
 }: {
   amount: number;
   currency?: string;
   orderName?: string;
+  description?: string;
+  productId?: string;
 }) {
   try {
+    // Get product image if available
+    let imageUrl = '';
+    if (productId) {
+      try {
+        const catalogResponse = await squareClient.catalog.retrieveCatalogObject(productId);
+        const item = catalogResponse.object;
+        if (item?.itemData?.imageIds?.length) {
+          const imageId = item.itemData.imageIds[0];
+          // Get image URL from Square
+          const imageResponse = await squareClient.catalog.retrieveCatalogObject(imageId);
+          if (imageResponse.object?.type === 'IMAGE') {
+            imageUrl = imageResponse.object.imageData?.url || '';
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching product image:', err);
+        // Continue without image if there's an error
+      }
+    }
+
     const request = {
       idempotencyKey: crypto.randomUUID(),
       quickPay: {
@@ -87,9 +111,21 @@ export async function createPaymentLink({
       checkoutOptions: {
         askForShippingAddress: true,
         redirectUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://funeral.supply',
-        merchantSupportEmail: 'funeral.supply@gmail.com'
+        merchantSupportEmail: 'funeral.supply@gmail.com',
+        allowTipping: false,
+        enableCoupon: false,
+        customFields: [
+          {
+            title: 'Special Instructions',
+          }
+        ]
       }
     };
+
+    // Add note about the product if description is available
+    if (description) {
+      request.note = description;
+    }
 
     const response = await squareClient.checkout.paymentLinks.create(request);
     return JSON.parse(JSON.stringify(response.paymentLink, (key, value) =>
