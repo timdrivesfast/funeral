@@ -6,7 +6,7 @@ import Subscribe from './Subscribe';
 
 export default function ShopStatus() {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(true); 
+  const [isOpen, setIsOpen] = useState(false); 
   const [isLoaded, setIsLoaded] = useState(false);
   const [showSubscribe, setShowSubscribe] = useState(false);
 
@@ -16,7 +16,7 @@ export default function ShopStatus() {
     if (storedShopStatus !== null) {
       setIsOpen(storedShopStatus === 'open');
     } else {
-      localStorage.setItem('shopStatus', 'open');
+      localStorage.setItem('shopStatus', 'closed');
     }
     
     setIsLoaded(true);
