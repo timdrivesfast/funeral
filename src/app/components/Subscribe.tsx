@@ -76,7 +76,7 @@ export default function Subscribe({ isControlled, isOpen: controlledIsOpen, onCl
       )}
 
       {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center p-4 z-50 font-['Helvetica_Neue']">
+        <div className="fixed inset-0 flex items-center justify-center p-1 z-50 font-['Helvetica_Neue']">
           {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-black/80 animate-backdrop-in" 
@@ -84,7 +84,7 @@ export default function Subscribe({ isControlled, isOpen: controlledIsOpen, onCl
           />
           
           {/* Modal */}
-          <div className="relative w-full max-w-xl sm:max-w-lg animate-modal-in">
+          <div className="relative w-[95%] max-w-2xl animate-modal-in">
             <div className="bg-white border border-blue-200 rounded-xl shadow-lg overflow-hidden">
               {/* Windows XP/Vista style header with gradient */}
               <div className="bg-gradient-to-b from-blue-400 to-blue-500 p-3 flex justify-between items-center">

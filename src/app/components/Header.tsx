@@ -10,8 +10,9 @@ export default function Header() {
 
   useEffect(() => {
     const checkStoreStatus = () => {
-      // Force closed state for initial launch
-      setIsStoreOpen(false);
+      // Check localStorage for store status
+      const status = localStorage.getItem('shopStatus');
+      setIsStoreOpen(status === 'open');
     };
 
     checkStoreStatus();

@@ -17,9 +17,9 @@ export default function ShopStatus() {
     if (storedShopStatus !== null) {
       setIsOpen(storedShopStatus === 'open');
     } else {
-      // Default to closed as per user preference
-      localStorage.setItem('shopStatus', 'closed');
-      setIsOpen(false); // Explicitly set to closed
+      // Default to open as per updated user preference
+      localStorage.setItem('shopStatus', 'open');
+      setIsOpen(true); // Explicitly set to open
     }
     
     setIsLoaded(true);
