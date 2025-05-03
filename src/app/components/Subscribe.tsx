@@ -84,25 +84,27 @@ export default function Subscribe({ isControlled, isOpen: controlledIsOpen, onCl
           />
           
           {/* Modal */}
-          <div className="relative w-full max-w-md animate-modal-in">
-            <div className="bg-zinc-950 border border-zinc-800 rounded-lg shadow-lg">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <div className="w-6" /> {/* Spacer for visual balance */}
-                  <h2 className="text-lg font-medium text-zinc-200">FUNERAL</h2>
-                  <button
-                    onClick={handleClose}
-                    className="text-zinc-400 hover:text-zinc-100 transition-colors w-6"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                </div>
+          <div className="relative w-full max-w-xl sm:max-w-lg animate-modal-in">
+            <div className="bg-white border border-blue-200 rounded-xl shadow-lg overflow-hidden">
+              {/* Windows XP/Vista style header with gradient */}
+              <div className="bg-gradient-to-b from-blue-400 to-blue-500 p-3 flex justify-between items-center">
+                <div className="w-6" /> {/* Spacer for visual balance */}
+                <h2 className="text-lg font-medium text-white drop-shadow-sm">funeral</h2>
+                <button
+                  onClick={handleClose}
+                  className="text-white hover:text-white/80 transition-colors w-6"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <div className="p-6 bg-gradient-to-b from-white to-blue-50">
+
 
                 <div className="space-y-4 mb-6">
-                  <p className="text-sm text-zinc-400 leading-relaxed">
+                  <p className="text-sm text-zinc-700 leading-relaxed">
                     Join our private list for member-exclusive drops. Release times and details are shared only with subscribers—no public announcements.
                   </p>
                 </div>
@@ -116,7 +118,7 @@ export default function Subscribe({ isControlled, isOpen: controlledIsOpen, onCl
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
                         required
-                        className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-4 py-3 text-sm text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-700 focus:border-transparent transition-all"
+                        className="w-full bg-white border border-blue-200 rounded-full px-5 py-3 text-zinc-800 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all shadow-inner"
                       />
                     </div>
                   </div>
@@ -124,21 +126,26 @@ export default function Subscribe({ isControlled, isOpen: controlledIsOpen, onCl
                   <button
                     type="submit"
                     disabled={status === 'loading'}
-                    className="w-full bg-white hover:bg-zinc-100 text-black font-medium py-3 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm tracking-wide"
+                    className="w-full bg-gradient-to-b from-[#FF9BC0]/90 to-[#FF83B1] hover:from-[#FFAED0] hover:to-[#FF9BC0] text-white font-medium py-3 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm tracking-wide uppercase relative overflow-hidden shadow-md"
                   >
+                    {/* Vista glass reflection effect */}
+                    <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/50 to-transparent"></div>
+                    </div>
+                    
                     {status === 'loading' ? (
-                      <span className="flex items-center justify-center">
-                        <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <span className="flex items-center justify-center relative z-10">
+                        <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        SUBSCRIBING...
+                        <span className="relative z-10">SUBSCRIBING...</span>
                       </span>
-                    ) : 'GET NOTIFIED'}
+                    ) : <span className="relative z-10">GET NOTIFIED</span>}
                   </button>
 
                   {message && (
-                    <div className={`mt-3 text-sm ${status === 'error' ? 'text-red-500' : 'text-emerald-500'}`}>
+                    <div className={`mt-4 text-center text-sm font-medium ${status === 'error' ? 'text-red-500' : 'text-[#FF9BC0]'}`}>
                       {message}
                     </div>
                   )}
