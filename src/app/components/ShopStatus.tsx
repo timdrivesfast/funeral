@@ -9,6 +9,7 @@ export default function ShopStatus() {
   const [isOpen, setIsOpen] = useState(false); 
   const [isLoaded, setIsLoaded] = useState(false);
   const [showSubscribe, setShowSubscribe] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     const storedShopStatus = localStorage.getItem('shopStatus');
@@ -16,10 +17,13 @@ export default function ShopStatus() {
     if (storedShopStatus !== null) {
       setIsOpen(storedShopStatus === 'open');
     } else {
+      // Default to closed as per user preference
       localStorage.setItem('shopStatus', 'closed');
+      setIsOpen(false); // Explicitly set to closed
     }
     
     setIsLoaded(true);
+    console.log('Shop status:', storedShopStatus, 'isOpen:', storedShopStatus === 'open');
   }, []);
 
   const toggleShopStatus = () => {
@@ -48,47 +52,96 @@ export default function ShopStatus() {
     <>
       <div 
         onClick={handleClick}
-        className={`
-          font-['Helvetica_Neue'] select-none cursor-pointer
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+        className="
+          relative select-none cursor-pointer
           transition-all duration-500 ease-out
-          hover:opacity-80
-        `}
+          font-roboto
+        "
       >
-        <div className="relative">
-          <div className={`
-            px-8 py-3 text-sm uppercase tracking-[0.2em]
-            ${isOpen ? 'text-emerald-500/90' : 'text-red-500/90'}
-            transition-colors duration-1000
-            rounded-full
-          `}>
-            {/* Softer glow effect */}
+        {/* Windows Vista-style glass capsule button */}
+        <div className="relative py-4 px-12 overflow-hidden group">
+          {/* Vista glossy capsule shape with rounded ends */}
+          <div className="absolute inset-0 rounded-full overflow-hidden">
+            {/* Vista glass background with light reflection */}
             <div className={`
-              absolute inset-0 blur-xl opacity-30
-              ${isOpen ? 'bg-emerald-500' : 'bg-red-500'}
-              transition-colors duration-1000
-              rounded-full
-            `} />
-            
-            {/* Text with softer glow */}
-            <span className={`
-              relative
-              ${isOpen ? 'text-emerald-400/90' : 'text-red-400/90'}
-              transition-colors duration-1000
-              [text-shadow:0_0_15px_currentColor,0_0_30px_currentColor]
+              absolute inset-0
+              ${isOpen ? 'bg-blue-400/80' : 'bg-[#FF9BC0]/80'}
+              transition-colors duration-700 backdrop-blur-sm
             `}>
-              {isOpen ? 'OPEN' : 'CLOSED'}
-            </span>
+              {/* Debug info - only visible during development */}
+              <div className="hidden">{isOpen ? 'OPEN-STATE' : 'CLOSED-STATE'}</div>
+            </div>
+            
+            {/* Top highlight shine - the classic Vista glass look */}
+            <div className="
+              absolute top-0 left-0 right-0 h-1/2
+              bg-gradient-to-b from-white/80 to-transparent
+              opacity-80
+            "></div>
+            
+            {/* Bottom subtle shadow */}
+            <div className="
+              absolute bottom-0 left-0 right-0 h-1/3
+              bg-gradient-to-t from-black/10 to-transparent
+            "></div>
+            
+            {/* Side glossy edge highlights */}
+            <div className="
+              absolute top-1/4 bottom-1/4 left-0.5 w-2
+              bg-gradient-to-r from-white/60 to-transparent rounded-l-full
+            "></div>
+            <div className="
+              absolute top-1/4 bottom-1/4 right-0.5 w-2
+              bg-gradient-to-l from-white/60 to-transparent rounded-r-full
+            "></div>
+            
+            {/* Vista "glass edge" reflection - thin white line at top */}
+            <div className="
+              absolute top-0.5 left-5 right-5 h-[1px]
+              bg-white/90
+            "></div>
+            
+            {/* Inner reflection effect */}
+            <div className={`
+              absolute inset-1.5 rounded-full 
+              ${isOpen ? 'bg-gradient-to-b from-blue-300/70 via-blue-400/40 to-blue-500/80' : 'bg-gradient-to-b from-[#FFB4D0]/70 via-[#FF9BC0]/40 to-[#FF83B1]/80'}
+              ${isHovering ? 'opacity-90 scale-[0.98]' : 'opacity-80'}
+              transition-all duration-300
+              shadow-inner
+            `}></div>
+            
+            {/* Animated water-like reflection when hovered (Vista Aero effect) */}
+            <div className={`
+              absolute inset-x-3 top-0 h-full
+              bg-gradient-to-b from-white/60 via-transparent to-transparent
+              -translate-y-full group-hover:translate-y-full transition-transform duration-1500 ease-in-out
+            `}></div>
           </div>
-
-          {/* Softer flicker animation */}
-          <div className={`
-            absolute inset-0 opacity-0
-            animate-[flicker_4s_infinite]
-            ${isOpen ? 'bg-emerald-500/50' : 'bg-red-500/50'}
-            transition-colors duration-1000
-            mix-blend-overlay
-            rounded-full
-          `} />
+          
+          {/* Outer glossy border - Vista style */}
+          <div className="
+            absolute inset-0 rounded-full border
+            border-white/50 shadow-[0_0_10px_rgba(255,255,255,0.5),inset_0_0_2px_rgba(255,255,255,0.5)]
+          "></div>
+          
+          {/* Text with classic Vista styling */}
+          <div className="relative flex justify-center items-center py-1">
+            <span className={`
+              uppercase tracking-[0.15em] font-bold text-sm z-10
+              text-white
+              transition-colors duration-700
+              drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]
+            `}>{isOpen ? 'OPEN' : 'CLOSED'}</span>
+          </div>
+          
+          {/* Bottom shadow - Windows Vista style */}
+          <div className="
+            absolute -bottom-3 left-1/2 -translate-x-1/2 w-3/4 h-6 
+            bg-black/20 blur-md rounded-full
+            opacity-60
+          "></div>
         </div>
       </div>
 

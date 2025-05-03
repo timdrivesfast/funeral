@@ -7,21 +7,113 @@
   --background-rgb: 0, 0, 0;
 }
 
+/* Frutiger Aero inspired animation effects */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
+}
+
+@keyframes pulse-water {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.05); }
+}
+
+@keyframes bubble-shine {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes float-up {
+  0% { transform: translateY(100vh); }
+  100% { transform: translateY(-20vh); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 0.3; }
+  25% { opacity: 0.4; }
+  50% { opacity: 0.2; }
+  75% { opacity: 0.5; }
+}
+
+/* Animations */
+.animate-float {
+  animation: float 15s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+.animate-flicker {
+  animation: flicker 4s ease-in-out infinite;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
 }
 
+/* Font variable classes */
+.font-rubik-mono {
+  font-family: var(--font-rubik-mono);
+}
+
+.font-roboto {
+  font-family: var(--font-roboto);
+}
+
+.font-inter {
+  font-family: var(--font-inter);
+}
+
 @layer components {
+  /* Base button */
   .btn {
-    @apply px-4 py-2 rounded-none transition-colors duration-200;
+    @apply px-4 py-2 transition-all duration-300;
   }
   
+  /* Primary button - Frutiger Aero style */
   .btn-primary {
-    @apply bg-white text-black hover:bg-gray-200;
+    @apply relative bg-cyan-400/30 backdrop-blur-md text-white border border-white/20 
+           hover:bg-cyan-400/40 hover:shadow-lg overflow-hidden;
   }
   
+  /* Frutiger Aero glass effect */
+  .btn-primary::before {
+    @apply content-[''] absolute inset-0 bg-gradient-to-b from-white/40 to-transparent pointer-events-none;
+  }
+  
+  /* Secondary button - Punk inspired */
   .btn-secondary {
-    @apply bg-transparent border border-white hover:bg-white hover:text-black;
+    @apply bg-transparent border border-white/40 hover:bg-white/10 relative overflow-hidden;
+  }
+  
+  /* Punk diagonal line accent */
+  .btn-secondary::after {
+    @apply content-[''] absolute -bottom-1 -left-1 right-1 h-1 bg-red-500 -rotate-2 transform-gpu;
+  }
+  
+  /* Glass panel container */
+  .glass-panel {
+    @apply backdrop-blur-md bg-white/10 rounded-xl border border-white/20 shadow-lg overflow-hidden;
+  }
+  
+  /* Glass panel gradient overlay */
+  .glass-panel-overlay {
+    @apply absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-xl pointer-events-none;
   }
 } 
