@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react'
+import CheckoutButton from '@/src/app/components/CheckoutButton'
 
 interface Product {
   id: string;
@@ -46,7 +47,6 @@ export default function ProductDisplay({ product }: Props) {
   const [imageError, setImageError] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [quantity] = useState(1); 
-  const [isBuying, setIsBuying] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const details = formatProductDetails(product.description);
   
@@ -73,33 +73,6 @@ export default function ProductDisplay({ product }: Props) {
     console.log(`ProductDisplay useEffect - Re-checking stock: ${product.stock}, Type: ${typeof product.stock}`);
     // This is just to log the current value, no action needed
   }, [product.stock]);
-
-  const handleBuyNow = async () => {
-    setIsBuying(true);
-    try {
-      const response = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productId: product.id,
-          quantity
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Checkout failed');
-      }
-
-      const { url } = await response.json();
-      window.location.href = url;
-    } catch (error) {
-      console.error('Error during checkout:', error);
-    } finally {
-      setIsBuying(false);
-    }
-  };
 
   return (
     <main className="min-h-screen p-4 md:p-10">
@@ -177,9 +150,9 @@ export default function ProductDisplay({ product }: Props) {
               <p className="text-zinc-400 text-sm uppercase tracking-wider mb-2">
                 {product.category || 'Uncategorized'}
               </p>
-              <h1 className="text-4xl font-bold tracking-tight mb-2">{product.name}</h1>
+              <h1 className="text-4xl font-bold tracking-tight mb-2 text-zinc-800">{product.name}</h1>
               <div className="flex items-baseline">
-                <h1 className="text-4xl font-bold text-white">{formattedPrice}</h1>
+                <h1 className="text-4xl font-bold text-zinc-800">{formattedPrice}</h1>
               </div>
             </div>
 
@@ -187,8 +160,8 @@ export default function ProductDisplay({ product }: Props) {
             <div className="space-y-6">
               {Object.entries(details).map(([key, value]) => (
                 <div key={key} className="flex flex-col">
-                  <dt className="text-sm text-zinc-400 uppercase tracking-wider">{key}</dt>
-                  <dd className="text-white text-lg">{value}</dd>
+                  <dt className="text-sm text-zinc-500 uppercase tracking-wider">{key}</dt>
+                  <dd className="text-zinc-800 text-lg">{value}</dd>
                 </div>
               ))}
             </div>
@@ -226,23 +199,26 @@ export default function ProductDisplay({ product }: Props) {
             )}
 
             <div className="flex flex-col space-y-4">
-              {/* Buy Now Button - Disabled if sold out */}
-              <button
-                onClick={handleBuyNow}
-                disabled={isSoldOut || isBuying}
-                className={`relative select-none cursor-pointer px-8 py-3 text-sm uppercase tracking-[0.2em] transition-all duration-500 ease-out disabled:opacity-50 disabled:cursor-not-allowed group ${
-                  isSoldOut ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-              >
-                <div className={`absolute inset-0 ${isSoldOut ? 'bg-zinc-800' : 'bg-white opacity-90 group-hover:opacity-100'} transition-opacity duration-500`} />
-                <div className={`absolute inset-0 blur-xl opacity-30 ${isSoldOut ? 'bg-zinc-800' : 'bg-white'} group-hover:opacity-40 transition-opacity duration-500`} />
-                <div className={`relative ${isSoldOut ? 'text-zinc-500' : 'text-black'}`}>
-                  {isBuying ? 'Processing...' : isSoldOut ? 'Sold Out' : 'Buy Now'}
-                </div>
-                {!isSoldOut && (
-                  <div className="absolute inset-0 opacity-0 animate-[flicker_4s_infinite] bg-white/50 mix-blend-overlay" />
-                )}
-              </button>
+              {/* Use the new CheckoutButton component */}
+              {!isSoldOut && (
+                <CheckoutButton 
+                  productId={product.id}
+                  quantity={quantity}
+                  buttonText="Buy Now"
+                  className="w-full"
+                />
+              )}
+              
+              {/* Show Sold Out message if the product is not available */}
+              {isSoldOut && (
+                <button
+                  disabled={true}
+                  className="relative select-none cursor-not-allowed px-8 py-3 text-sm uppercase tracking-[0.2em] opacity-50"
+                >
+                  <div className="absolute inset-0 bg-zinc-800" />
+                  <div className="relative text-zinc-500">Sold Out</div>
+                </button>
+              )}
             </div>
           </div>
         </div>

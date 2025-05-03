@@ -23,9 +23,9 @@ export default function Header() {
   if (pathname === '/') return null;
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-4 md:px-10 z-40 bg-black/50 backdrop-blur-sm">
-      <Link href="/" className="font-bold tracking-tighter">
-        FUNERAL
+    <header className="fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-4 md:px-10 z-40 bg-white shadow-sm">
+      <Link href="/" className="font-bold tracking-tighter text-[#FF9BC0]">
+        funeral
       </Link>
 
       {isStoreOpen && (
