@@ -32,20 +32,10 @@ export default function Header() {
       {isStoreOpen && (
         <nav className="flex items-center space-x-6">
           <Link
-            href="/products?category=objects"
-            className={`hover:text-white transition-colors ${
-              pathname.includes('objects') ? 'text-white' : 'text-zinc-500'
-            }`}
+            href="/products"
+            className="text-[#FF9BC0] hover:text-[#FF83B1] transition-colors"
           >
-            Objects
-          </Link>
-          <Link
-            href="/products?category=packaging"
-            className={`hover:text-white transition-colors ${
-              pathname.includes('packaging') ? 'text-white' : 'text-zinc-500'
-            }`}
-          >
-            Packaging
+            shop
           </Link>
         </nav>
       )}
