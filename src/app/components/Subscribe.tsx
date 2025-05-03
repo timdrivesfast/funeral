@@ -83,8 +83,8 @@ export default function Subscribe({ isControlled, isOpen: controlledIsOpen, onCl
             onClick={handleClose}
           />
           
-          {/* Modal */}
-          <div className="relative w-[95%] max-w-2xl animate-modal-in">
+          {/* Modal - Even wider for mobile */}
+          <div className="relative w-[98%] max-w-4xl animate-modal-in">
             <div className="bg-white border border-blue-200 rounded-xl shadow-lg overflow-hidden">
               {/* Windows XP/Vista style header with gradient */}
               <div className="bg-gradient-to-b from-blue-400 to-blue-500 p-3 flex justify-between items-center">
@@ -100,52 +100,52 @@ export default function Subscribe({ isControlled, isOpen: controlledIsOpen, onCl
                   </svg>
                 </button>
               </div>
-              <div className="p-6 bg-gradient-to-b from-white to-blue-50">
-
-
-                <div className="space-y-4 mb-6">
-                  <p className="text-sm text-zinc-700 leading-relaxed">
-                    Join our private list for member-exclusive drops. Release times and details are shared only with subscribers—no public announcements.
+              
+              <div className="p-3 bg-gradient-to-b from-white to-blue-50">
+                <div className="mb-2">
+                  <p className="text-sm text-zinc-700">
+                    Join our list for member-exclusive drops. Details shared only with subscribers—no public announcements.
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="relative">
+                <form onSubmit={handleSubmit} className="mt-2">
+                  <div className="flex flex-row gap-2">
+                    <div className="relative flex-grow">
                       <input
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
                         required
-                        className="w-full bg-white border border-blue-200 rounded-full px-5 py-3 text-zinc-800 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all shadow-inner"
+                        className="w-full bg-white border border-blue-200 rounded-full px-4 py-2 text-zinc-800 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all shadow-inner"
                       />
+                    </div>
+                    <div className="flex-shrink-0">
+                      <button
+                        type="submit"
+                        disabled={status === 'loading'}
+                        className="whitespace-nowrap bg-gradient-to-b from-[#FF9BC0]/90 to-[#FF83B1] hover:from-[#FFAED0] hover:to-[#FF9BC0] text-white font-medium px-6 py-2 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm tracking-wide uppercase relative overflow-hidden shadow-md"
+                      >
+                        {/* Vista glass reflection effect */}
+                        <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
+                          <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/50 to-transparent"></div>
+                        </div>
+                      
+                        {status === 'loading' ? (
+                          <span className="flex items-center justify-center relative z-10">
+                            <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span className="relative z-10">SUBSCRIBING...</span>
+                          </span>
+                        ) : <span className="relative z-10">GET NOTIFIED</span>}
+                      </button>
                     </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={status === 'loading'}
-                    className="w-full bg-gradient-to-b from-[#FF9BC0]/90 to-[#FF83B1] hover:from-[#FFAED0] hover:to-[#FF9BC0] text-white font-medium py-3 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm tracking-wide uppercase relative overflow-hidden shadow-md"
-                  >
-                    {/* Vista glass reflection effect */}
-                    <div className="absolute inset-0 overflow-hidden rounded-full pointer-events-none">
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/50 to-transparent"></div>
-                    </div>
-                    
-                    {status === 'loading' ? (
-                      <span className="flex items-center justify-center relative z-10">
-                        <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span className="relative z-10">SUBSCRIBING...</span>
-                      </span>
-                    ) : <span className="relative z-10">GET NOTIFIED</span>}
-                  </button>
-
                   {message && (
-                    <div className={`mt-4 text-center text-sm font-medium ${status === 'error' ? 'text-red-500' : 'text-[#FF9BC0]'}`}>
+                    <div className={`mt-2 text-center text-sm font-medium ${status === 'error' ? 'text-red-500' : 'text-[#FF9BC0]'}`}>
                       {message}
                     </div>
                   )}
@@ -157,4 +157,4 @@ export default function Subscribe({ isControlled, isOpen: controlledIsOpen, onCl
       )}
     </>
   );
-} 
+}
