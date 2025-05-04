@@ -71,7 +71,20 @@ export default function ProductGrid({ category }: { category?: string }) {
         if (!response.ok) {
           const errorData = await response.json();
           console.error('API Error Response:', errorData);
-          throw new Error(errorData.error || 'Failed to fetch products');
+          
+          // Extract detailed error message if available
+          let errorMessage = 'Failed to fetch products';
+          if (errorData.error) {
+            errorMessage = errorData.error;
+            if (errorData.message) {
+              errorMessage += `: ${errorData.message}`;
+            }
+            if (errorData.details) {
+              errorMessage += ` (${errorData.details})`;
+            }
+          }
+          
+          throw new Error(errorMessage);
         }
         
         // Get the products directly from the API response
@@ -98,8 +111,18 @@ export default function ProductGrid({ category }: { category?: string }) {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-red-500 text-center p-4 animate-fade-in">{error}</p>
+      <div className="flex flex-col items-center justify-center min-h-[400px] p-6">
+        <p className="text-red-500 font-medium text-center p-4 animate-fade-in">{error}</p>
+        <div className="mt-4 text-sm text-zinc-400 max-w-lg">
+          <p className="mb-2">This error is occurring in your local development environment, but may not affect your live site.</p>
+          <p className="mb-2">Possible causes:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Missing environment variables (SQUARE_ACCESS_TOKEN, SQUARE_LOCATION_ID)</li>
+            <li>Invalid Square API credentials</li>
+            <li>Network connectivity issues</li>
+          </ul>
+          <p className="mt-2">Check your .env.local file to ensure all required variables are set correctly.</p>
+        </div>
       </div>
     );
   }

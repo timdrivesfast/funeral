@@ -4,10 +4,17 @@ import { useState } from 'react'
 
 interface Props {
   productId: string
+  quantity?: number
   className?: string
+  buttonText?: string
 }
 
-export default function CheckoutButton({ productId, className = '' }: Props) {
+export default function CheckoutButton({ 
+  productId, 
+  quantity = 1, 
+  className = '',
+  buttonText = 'Buy Now'
+}: Props) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -21,7 +28,7 @@ export default function CheckoutButton({ productId, className = '' }: Props) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ productId }),
+        body: JSON.stringify({ productId, quantity }),
       })
 
       const data = await response.json()
@@ -30,7 +37,7 @@ export default function CheckoutButton({ productId, className = '' }: Props) {
         throw new Error(data.error || 'Something went wrong')
       }
 
-      // Redirect to Stripe Checkout
+      // Redirect to Square Checkout
       window.location.href = data.url
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
@@ -48,12 +55,9 @@ export default function CheckoutButton({ productId, className = '' }: Props) {
           isLoading ? 'opacity-50 cursor-not-allowed' : ''
         } ${className}`}
       >
-        {isLoading ? 'Processing...' : 'Buy Now'}
+        {isLoading ? 'Processing...' : buttonText}
       </button>
-      
-      {error && (
-        <p className="text-red-500 text-sm">{error}</p>
-      )}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>
   )
 }

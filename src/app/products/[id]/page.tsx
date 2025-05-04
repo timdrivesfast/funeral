@@ -70,7 +70,7 @@ async function getProduct(id: Promise<string>) {
     }
     
     // Get all image URLs instead of just the first one
-    const imageUrls = itemData?.imageIds?.map(imageId => `/api/images/${imageId}`) || [];
+    const imageUrls = itemData?.imageIds?.map((imageId: string) => `/api/images/${imageId}`) || [];
 
     // Ensure stock is 0 for sold out items, not undefined
     let stockValue = product.quantity;

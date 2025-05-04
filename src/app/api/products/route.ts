@@ -4,6 +4,23 @@ import { squareClient, getCatalogItemsWithInventory } from '@/src/lib/square-ser
 export async function GET(request: Request) {
   console.log('API: /api/products GET request received');
   
+  // Check environment variables first
+  if (!process.env.SQUARE_ACCESS_TOKEN) {
+    console.error('SQUARE_ACCESS_TOKEN is missing in environment variables');
+    return NextResponse.json(
+      { error: 'Square API configuration is incomplete: Missing access token' },
+      { status: 500 }
+    );
+  }
+
+  if (!process.env.SQUARE_LOCATION_ID) {
+    console.error('SQUARE_LOCATION_ID is missing in environment variables');
+    return NextResponse.json(
+      { error: 'Square API configuration is incomplete: Missing location ID' },
+      { status: 500 }
+    );
+  }
+  
   try {
     // Test Square API connection
     try {
@@ -100,7 +117,7 @@ export async function GET(request: Request) {
 
     // Log inventory data for debugging
     console.log('Raw inventory data from Square:');
-    catalogItems.forEach(item => {
+    catalogItems.forEach((item: any) => {
       if (item.itemData?.name) {
         console.log(`Product: ${item.itemData.name}, ID: ${item.id}, Stock: ${item.quantity === undefined ? 'undefined' : item.quantity === null ? 'null' : item.quantity}`);
       }
@@ -112,13 +129,13 @@ export async function GET(request: Request) {
     // Filter by category if specified
     let filteredProducts = products;
     if (category) {
-      filteredProducts = products.filter(product => product.category === category);
+      filteredProducts = products.filter((product: any) => product.category === category);
     }
 
     // Sort products by name to match Square dashboard order
-    const sortedProducts = filteredProducts.sort((a, b) => {
+    const sortedProducts = filteredProducts.sort((a: any, b: any) => {
       // Extract numeric part from product names (e.g., "V1.01" -> 1.01)
-      const getNumericValue = (name: string) => {
+      const getNumericValue = (name: string): number => {
         const match = name.match(/V(\d+\.\d+)/);
         return match ? parseFloat(match[1]) : Infinity;
       };
@@ -145,11 +162,35 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error('Error fetching products:', error);
-    if (error && typeof error === 'object' && 'errors' in error) {
-      const squareError = error as { errors: Array<{ message: string }> };
-      console.error('Square API Error:', squareError.errors);
+    
+    // Provide more detailed error messages depending on the error type
+    if (error && typeof error === 'object') {
+      if ('errors' in error) {
+        const squareError = error as { errors: Array<{ message: string }> };
+        console.error('Square API Error:', squareError.errors);
+        
+        // Return the actual Square API error messages
+        return NextResponse.json(
+          { 
+            error: 'Square API Error', 
+            details: squareError.errors.map(e => e.message).join(', ')
+          },
+          { status: 500 }
+        );
+      } else if (error instanceof Error) {
+        // Return the error message from the Error object
+        return NextResponse.json(
+          { 
+            error: 'Server Error', 
+            message: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+          },
+          { status: 500 }
+        );
+      }
     }
     
+    // Generic error fallback
     return NextResponse.json(
       { error: 'Failed to fetch products' },
       { status: 500 }
