@@ -120,10 +120,10 @@ export default function ShopStatus() {
             `}></div>
           </div>
           
-          {/* Outer glossy border - Vista style */}
+          {/* Soft glow instead of border */}
           <div className="
-            absolute inset-0 rounded-full border
-            border-white/50 shadow-[0_0_10px_rgba(255,255,255,0.5),inset_0_0_2px_rgba(255,255,255,0.5)]
+            absolute inset-0 rounded-full
+            shadow-[0_0_15px_rgba(255,255,255,0.4)]
           "></div>
           
           {/* Text with classic Vista styling */}

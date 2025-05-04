@@ -20,40 +20,37 @@ export default function Home() {
       <div className="absolute left-0 right-0 bottom-0 h-1/3 bg-gradient-to-t from-green-500 to-green-400 rounded-t-[100%] transform translate-y-10"></div>
       <div className="absolute left-0 right-0 bottom-0 h-1/4 bg-gradient-to-t from-green-600 to-green-500 rounded-t-[100%] transform translate-y-5"></div>
       
-      {/* Glass-like water bubbles with reflections and animations (the signature Aero look) */}
-      <div className="absolute w-48 h-48 right-20 top-56 rounded-full overflow-hidden animate-[float_15s_ease-in-out_infinite] hover:scale-105 transition-transform duration-500">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-blue-100/80 to-blue-200/60 backdrop-blur-sm border border-white/50 shadow-2xl"></div>
-        <div className="absolute top-0 left-1/4 right-1/4 h-1 bg-white opacity-90"></div>
-        <div className="absolute -top-10 -left-10 w-40 h-40 bg-green-400/30 rounded-full blur-md animate-[float_8s_ease-in-out_infinite_1.5s]"></div>
+      {/* Glass-like water bubbles with reflections and animations (the signature Aero look) - cleaned up */}
+      <div className="absolute w-44 h-44 right-24 top-60 rounded-full overflow-hidden animate-[float_15s_ease-in-out_infinite] hover:scale-105 transition-transform duration-500">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-100/70 to-blue-200/50 backdrop-blur-sm shadow-2xl"></div>
+        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-white opacity-80"></div>
         {/* Animated internal reflection */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent -translate-y-full animate-[bubble-shine_8s_ease-in-out_infinite]"></div>
       </div>
       
-      <div className="absolute w-32 h-32 left-20 top-1/2 rounded-full overflow-hidden animate-[float_12s_ease-in-out_infinite_0.5s] hover:scale-105 transition-transform duration-500">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-blue-100/80 to-blue-200/60 backdrop-blur-sm border border-white/50 shadow-xl"></div>
-        <div className="absolute top-0 left-1/4 right-1/4 h-1 bg-white opacity-90"></div>
-        <div className="absolute -top-6 -left-6 w-24 h-24 bg-green-400/30 rounded-full blur-md animate-[float_7s_ease-in-out_infinite_2s]"></div>
+      <div className="absolute w-32 h-32 left-24 top-1/2 rounded-full overflow-hidden animate-[float_12s_ease-in-out_infinite_0.5s] hover:scale-105 transition-transform duration-500">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-100/70 to-blue-200/50 backdrop-blur-sm shadow-xl"></div>
+        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-white opacity-80"></div>
         {/* Animated internal reflection */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent -translate-y-full animate-[bubble-shine_10s_ease-in-out_infinite_1s]"></div>
       </div>
       
-      <div className="absolute w-24 h-24 left-1/2 bottom-32 rounded-full overflow-hidden animate-[float_10s_ease-in-out_infinite_1.2s] hover:scale-105 transition-transform duration-500">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-blue-100/80 to-blue-200/60 backdrop-blur-sm border border-white/50 shadow-lg"></div>
-        <div className="absolute top-0 left-1/4 right-1/4 h-1 bg-white opacity-90"></div>
-        <div className="absolute -top-4 -left-4 w-16 h-16 bg-green-400/30 rounded-full blur-md animate-[float_6s_ease-in-out_infinite_0.5s]"></div>
+      <div className="absolute w-24 h-24 left-1/2 bottom-40 rounded-full overflow-hidden animate-[float_10s_ease-in-out_infinite_1.2s] hover:scale-105 transition-transform duration-500">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-100/70 to-blue-200/50 backdrop-blur-sm shadow-lg"></div>
+        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-white opacity-80"></div>
         {/* Animated internal reflection */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent -translate-y-full animate-[bubble-shine_7s_ease-in-out_infinite_0.7s]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent -translate-y-full animate-[bubble-shine_7s_ease-in-out_infinite_1.5s]"></div>
       </div>
       
-      {/* Additional smaller bubbles that float up */}
-      <div className="absolute w-10 h-10 right-40 bottom-10 rounded-full overflow-hidden animate-[float-up_15s_linear_infinite]">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-blue-100/70 to-blue-200/50 backdrop-blur-sm border border-white/50"></div>
+      {/* Tiny bubbles that float up (like in a carbonated drink) - simplified */}
+      <div className="absolute w-12 h-12 right-1/3 bottom-24 rounded-full overflow-hidden animate-[float-up_15s_linear_infinite]">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-100/60 to-blue-200/40 backdrop-blur-sm shadow-md"></div>
       </div>
-      <div className="absolute w-8 h-8 left-1/3 bottom-16 rounded-full overflow-hidden animate-[float-up_18s_linear_infinite_3s]">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-blue-100/70 to-blue-200/50 backdrop-blur-sm border border-white/50"></div>
+      <div className="absolute w-8 h-8 left-1/3 bottom-20 rounded-full overflow-hidden animate-[float-up_18s_linear_infinite_3s]">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-100/60 to-blue-200/40 backdrop-blur-sm shadow-md"></div>
       </div>
-      <div className="absolute w-6 h-6 right-1/4 bottom-8 rounded-full overflow-hidden animate-[float-up_12s_linear_infinite_5s]">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-blue-100/70 to-blue-200/50 backdrop-blur-sm border border-white/50"></div>
+      <div className="absolute w-6 h-6 right-1/4 bottom-16 rounded-full overflow-hidden animate-[float-up_12s_linear_infinite_5s]">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-100/60 to-blue-200/40 backdrop-blur-sm shadow-md"></div>
       </div>
       
       {/* Animated water splash effect */}
@@ -75,9 +72,9 @@ export default function Home() {
       <div className="relative z-10 flex flex-col items-center gap-12 px-6">
         {/* "FUNERAL" with Y2K Frutiger Aero treatment */}
         <div className="relative py-8">
-          <h1 className="text-6xl md:text-8xl font-bold tracking-tighter">
+          <h1 className="text-6xl md:text-8xl font-extrabold tracking-tighter">
             <span 
-              className="relative inline-block text-[#FF9BC0] animate-pulse-slow" 
+              className="relative inline-block text-[#FF80B0] animate-pulse-slow drop-shadow-sm" 
               style={{ fontFamily: 'Inter, sans-serif', textTransform: 'lowercase' }}>
               funeral
             </span>
