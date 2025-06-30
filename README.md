@@ -1,56 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# E-commerce Store with Next.js and Square
 
-## Getting Started
+A modern, full-stack e-commerce solution built with Next.js, Square, and Supabase. This project provides a solid foundation for building a production-ready online store with real-time inventory management, secure payments, and a seamless shopping experience.
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Modern Stack**: Built with Next.js 14, TypeScript, and Tailwind CSS
+- **Square Integration**: Seamless integration with Square for payments, inventory, and catalog management
+- **Real-time Updates**: Live inventory tracking with Square webhooks
+- **Authentication**: Secure user authentication with Supabase Auth
+- **Responsive Design**: Mobile-first, responsive layout that works on all devices
+- **Developer Friendly**: TypeScript support, clean code structure, and comprehensive documentation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 18+ and npm/yarn/pnpm
+- Square Developer Account
+- Supabase Account
+- Stripe Account (for payment processing)
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/ecommerce-store.git
+   cd ecommerce-store
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn
+   # or
+   pnpm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Set up environment variables:
+   ```bash
+   cp .env.local.example .env.local
+   ```
+   Then update the values in `.env.local` with your credentials.
 
-## Deploy on Vercel
+4. Run the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Square Integration
-
-This project uses Square APIs for product catalog, inventory management, and payment processing.
+## 🔧 Configuration
 
 ### Required Environment Variables
 
-```
+```env
+# Square Configuration
 SQUARE_ACCESS_TOKEN=your_square_access_token
 SQUARE_LOCATION_ID=your_square_location_id
-NEXT_PUBLIC_SITE_URL=your_site_url
+SQUARE_ENVIRONMENT=sandbox  # or 'production' for live environment
+SQUARE_WEBHOOK_SIGNATURE_KEY=your_webhook_signature_key
+
+# Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SQUARE_WEBHOOK_SIGNATURE_KEY=your_webhook_signature_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
+# App Configuration
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+STRIPE_SECRET_KEY=your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
 ```
 
-### Webhook Setup
+### Square Integration
+
+This project uses Square's APIs for:
+- Product catalog management
+- Inventory tracking
+- Secure payment processing
+- Order management
+
+#### Webhook Setup
 
 For real-time inventory updates, configure a Square webhook:
 
@@ -62,4 +97,64 @@ For real-time inventory updates, configure a Square webhook:
    - Event type: `inventory.count.updated`
 5. Copy the Signature Key and add it to your environment variables as `SQUARE_WEBHOOK_SIGNATURE_KEY`
 
-This webhook will automatically update your inventory when changes occur in Square, ensuring your website always displays accurate stock information.
+## 🛠 Development
+
+### Code Structure
+
+```
+src/
+├── app/                    # Next.js 13+ app directory
+│   ├── api/                # API routes
+│   ├── components/         # Reusable UI components
+│   ├── lib/                # Utility functions and API clients
+│   └── styles/             # Global styles
+```
+
+### Common Issues
+
+#### TypeScript Errors in square-server.ts
+
+If you encounter TypeScript errors related to Square's API methods (like `createPaymentLink`, `searchCatalogObjects`, etc.), you may need to update the Square Node.js SDK or install the correct types:
+
+```bash
+npm install @square/square@latest
+# or
+yarn add @square/square@latest
+```
+
+#### Tailwind CSS Warnings
+
+The warnings about `@tailwind` and `@apply` directives in `globals.css` are normal and can be safely ignored. They appear because the CSS linter doesn't recognize Tailwind's custom directives.
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fecommerce-store&env=SQUARE_ACCESS_TOKEN,SQUARE_LOCATION_ID,NEXT_PUBLIC_SITE_URL,NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,SQUARE_WEBHOOK_SIGNATURE_KEY&envDescription=Environment%20variables%20needed%20to%20run%20the%20application&envLink=https%3A%2F%2Fgithub.com%2Fyourusername%2Fecommerce-store%23%EF%B8%8F-configuration&project-name=ecommerce-store&repository-name=ecommerce-store)
+
+### Manual Deployment
+
+1. Build the application:
+   ```bash
+   npm run build
+   ```
+
+2. Start the production server:
+   ```bash
+   npm start
+   ```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org/) - The React Framework for Production
+- [Square](https://squareup.com/) - For their amazing e-commerce APIs
+- [Supabase](https://supabase.com/) - For the awesome open-source Firebase alternative
+- [Tailwind CSS](https://tailwindcss.com/) - For the utility-first CSS framework

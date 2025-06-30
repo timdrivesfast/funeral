@@ -19,7 +19,7 @@ async function getProduct(id: Promise<string>) {
     const items = await getCatalogItemsWithInventory()
     console.log(`Fetched ${items.length} products from Square API`);
     
-    const product = items.find(item => item.id === productId)
+    const product = items.find((item: any) => item.id === productId)
     
     if (product) {
       // Log detailed inventory information
