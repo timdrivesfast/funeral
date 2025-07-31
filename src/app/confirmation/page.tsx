@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function OrderConfirmation() {
+function OrderContent() {
   const searchParams = useSearchParams();
   const [orderDetails, setOrderDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -231,5 +231,23 @@ export default function OrderConfirmation() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OrderConfirmation() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto p-6 max-w-4xl">
+        <div className="text-center py-20">
+          <div className="animate-pulse flex flex-col items-center">
+            <div className="h-8 w-1/2 bg-gray-200 rounded mb-4"></div>
+            <div className="h-4 w-1/3 bg-gray-200 rounded mb-8"></div>
+            <div className="h-32 w-full bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    }>
+      <OrderContent />
+    </Suspense>
   );
 }
