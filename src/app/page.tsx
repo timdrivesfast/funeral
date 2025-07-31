@@ -4,91 +4,82 @@ import Image from 'next/image'
 export default function Home() {
   return (
     <main className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden">
-      {/* Windows XP/Vista style background with blue sky gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-blue-500 via-blue-400 to-blue-300 z-0" />
+      {/* Cyberpunk gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-purple-900 to-blue-900 z-0" />
       
-      {/* Fluffy white clouds with gentle drift animation */}
-      <div className="absolute w-64 h-28 left-10 top-20 bg-white rounded-full blur-md animate-[float_35s_linear_infinite]"></div>
-      <div className="absolute w-80 h-32 -right-10 top-40 bg-white rounded-full blur-md animate-[float_42s_linear_infinite_0.5s] opacity-90"></div>
-      <div className="absolute w-52 h-24 right-1/4 top-10 bg-white rounded-full blur-md animate-[float_38s_linear_infinite_1.2s]"></div>
-      <div className="absolute w-44 h-20 left-1/3 top-16 bg-white rounded-full blur-md animate-[float_40s_linear_infinite_2s] opacity-80"></div>
+      {/* Tron-inspired central light source */}
+      <div className="absolute bottom-[30%] left-1/2 transform -translate-x-1/2 w-60 h-60 bg-gradient-radial from-cyan-400 via-cyan-500/30 to-transparent rounded-full blur-md"></div>
       
-      {/* Subtle sun rays effect */}
-      <div className="absolute top-5 right-20 w-48 h-48 bg-yellow-100/30 rounded-full blur-xl animate-pulse-slow"></div>
+      {/* Grid overlay for cyberpunk feel */}
+      <div className="absolute inset-0" style={{ 
+        backgroundImage: `
+          linear-gradient(0deg, rgba(0, 231, 255, 0.1) 1px, transparent 1px), 
+          linear-gradient(90deg, rgba(0, 231, 255, 0.1) 1px, transparent 1px)
+        `,
+        backgroundSize: '40px 40px',
+        backgroundPosition: 'center',
+        perspective: '500px',
+        transform: 'rotateX(60deg) translateY(100px)'
+      }}></div>
       
-      {/* Green grass hills at bottom (Windows XP style) */}
-      <div className="absolute left-0 right-0 bottom-0 h-1/3 bg-gradient-to-t from-green-500 to-green-400 rounded-t-[100%] transform translate-y-10"></div>
-      <div className="absolute left-0 right-0 bottom-0 h-1/4 bg-gradient-to-t from-green-600 to-green-500 rounded-t-[100%] transform translate-y-5"></div>
-      
-      {/* Glass-like water bubbles with reflections and animations (the signature Aero look) - cleaned up */}
-      <div className="absolute w-44 h-44 right-24 top-60 rounded-full overflow-hidden animate-[float_15s_ease-in-out_infinite] hover:scale-105 transition-transform duration-500">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-100/70 to-blue-200/50 backdrop-blur-sm shadow-2xl"></div>
-        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-white opacity-80"></div>
+      {/* Neon glass bubbles */}
+      {/* Large bubble left */}
+      <div className="absolute bottom-[15%] left-[10%] w-36 h-36 rounded-full overflow-hidden animate-[float_15s_ease-in-out_infinite]">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-purple-600/30 backdrop-blur-sm shadow-lg border border-cyan-300/50"></div>
+        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-cyan-300 opacity-70"></div>
         {/* Animated internal reflection */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent -translate-y-full animate-[bubble-shine_8s_ease-in-out_infinite]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-cyan-400/40 via-transparent to-transparent -translate-y-full animate-[bubble-shine_8s_ease-in-out_infinite]"></div>
       </div>
       
-      <div className="absolute w-32 h-32 left-24 top-1/2 rounded-full overflow-hidden animate-[float_12s_ease-in-out_infinite_0.5s] hover:scale-105 transition-transform duration-500">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-100/70 to-blue-200/50 backdrop-blur-sm shadow-xl"></div>
-        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-white opacity-80"></div>
+      {/* Medium bubble right */}
+      <div className="absolute bottom-[10%] right-[15%] w-28 h-28 rounded-full overflow-hidden animate-[float_12s_ease-in-out_infinite_0.5s]">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/60 via-blue-600/40 to-cyan-700/30 backdrop-blur-sm shadow-lg border border-purple-300/50"></div>
+        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-purple-300 opacity-70"></div>
         {/* Animated internal reflection */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent -translate-y-full animate-[bubble-shine_10s_ease-in-out_infinite_1s]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-400/40 via-transparent to-transparent -translate-y-full animate-[bubble-shine_10s_ease-in-out_infinite_1s]"></div>
       </div>
       
-      <div className="absolute w-24 h-24 left-1/2 bottom-40 rounded-full overflow-hidden animate-[float_10s_ease-in-out_infinite_1.2s] hover:scale-105 transition-transform duration-500">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-100/70 to-blue-200/50 backdrop-blur-sm shadow-lg"></div>
-        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-white opacity-80"></div>
-        {/* Animated internal reflection */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-transparent -translate-y-full animate-[bubble-shine_7s_ease-in-out_infinite_1.5s]"></div>
+      {/* Small floating bubbles */}
+      <div className="absolute bottom-[25%] left-[30%] w-14 h-14 rounded-full overflow-hidden animate-[float_8s_ease-in-out_infinite_1.2s]">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/60 via-purple-500/40 to-cyan-600/30 backdrop-blur-sm shadow-lg border border-blue-300/50"></div>
+        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-blue-300 opacity-70"></div>
       </div>
       
-      {/* Tiny bubbles that float up (like in a carbonated drink) - simplified */}
-      <div className="absolute w-12 h-12 right-1/3 bottom-24 rounded-full overflow-hidden animate-[float-up_15s_linear_infinite]">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-100/60 to-blue-200/40 backdrop-blur-sm shadow-md"></div>
-      </div>
-      <div className="absolute w-8 h-8 left-1/3 bottom-20 rounded-full overflow-hidden animate-[float-up_18s_linear_infinite_3s]">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-100/60 to-blue-200/40 backdrop-blur-sm shadow-md"></div>
-      </div>
-      <div className="absolute w-6 h-6 right-1/4 bottom-16 rounded-full overflow-hidden animate-[float-up_12s_linear_infinite_5s]">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-blue-100/60 to-blue-200/40 backdrop-blur-sm shadow-md"></div>
+      <div className="absolute bottom-[20%] right-[40%] w-10 h-10 rounded-full overflow-hidden animate-[float_6s_ease-in-out_infinite_0.8s]">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/60 via-purple-500/40 to-blue-600/30 backdrop-blur-sm shadow-lg border border-cyan-300/50"></div>
       </div>
       
-      {/* Animated water splash effect */}
-      <div className="absolute left-0 bottom-32 w-64 h-28 bg-gradient-to-r from-blue-300/70 via-blue-200/90 to-white/70 rounded-full transform rotate-12 blur-sm animate-[pulse-water_8s_ease-in-out_infinite]"></div>
-      <div className="absolute left-10 bottom-40 w-32 h-14 bg-gradient-to-r from-blue-200/90 via-white/90 to-blue-100/80 rounded-full transform -rotate-12 blur-sm animate-[pulse-water_7s_ease-in-out_infinite_1s]"></div>
-      <div className="absolute right-20 bottom-24 w-48 h-20 bg-gradient-to-r from-white/70 via-blue-200/80 to-blue-100/60 rounded-full transform rotate-6 blur-sm animate-[pulse-water_9s_ease-in-out_infinite_0.5s]"></div>
+      {/* Digital circuit horizon line */}
+      <div className="absolute bottom-0 left-0 right-0 h-[20%] bg-gradient-to-b from-cyan-900/70 to-blue-900/80 border-t border-cyan-500/50"></div>
       
-      {/* Small white daisies (like in Windows XP Bliss wallpaper) */}
-      <div className="absolute left-1/4 bottom-10 w-6 h-6 bg-white rounded-full blur-[0.5px] shadow-sm"></div>
-      <div className="absolute left-1/4 bottom-9 w-3 h-3 bg-yellow-300 rounded-full blur-[0.5px]"></div>
-      
-      <div className="absolute right-1/3 bottom-16 w-5 h-5 bg-white rounded-full blur-[0.5px] shadow-sm"></div>
-      <div className="absolute right-1/3 bottom-15 w-2 h-2 bg-yellow-300 rounded-full blur-[0.5px]"></div>
-      
-      <div className="absolute left-2/3 bottom-8 w-4 h-4 bg-white rounded-full blur-[0.5px] shadow-sm"></div>
-      <div className="absolute left-2/3 bottom-7 w-1.5 h-1.5 bg-yellow-300 rounded-full blur-[0.5px]"></div>
-      
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center gap-12 px-6">
-        {/* "FUNERAL" with Y2K Frutiger Aero treatment */}
-        <div className="relative py-8">
-          <h1 className="text-6xl md:text-8xl font-extrabold tracking-tighter">
+      {/* Clean, simple logo and status */}
+      <div className="relative z-10 flex flex-col items-center gap-10 px-6">
+        {/* Modern, Helvetica FUNERAL logo with neon effect */}
+        <div className="relative py-4">
+          <h1 className="text-6xl md:text-8xl font-bold tracking-tight">
             <span 
-              className="relative inline-block text-[#FF80B0] animate-pulse-slow drop-shadow-sm" 
-              style={{ fontFamily: 'Inter, sans-serif', textTransform: 'lowercase' }}>
-              funeral
+              className="relative inline-block text-white drop-shadow-[0_0_10px_rgba(6,182,212,0.7)]" 
+              style={{ fontFamily: 'Helvetica, Arial, sans-serif', textTransform: 'uppercase' }}>
+              FUNERAL
             </span>
           </h1>
-          
-          {/* Animated glossy bubbles around logo */}
-          <div className="absolute -right-1 -top-1 w-14 h-14 bg-gradient-to-br from-blue-200 to-blue-400/70 rounded-full opacity-70 animate-[float_9s_ease-in-out_infinite_0.8s]"></div>
-          <div className="absolute -left-3 -bottom-2 w-10 h-10 bg-gradient-to-br from-pink-200 to-pink-400/70 rounded-full opacity-70 animate-[float_7s_ease-in-out_infinite_0.3s]"></div>
         </div>
         
-        {/* ShopStatus now floats freely without container */}
-        <div className="relative z-10 animate-[float_6s_ease-in-out_infinite_1s]">
+        {/* ShopStatus sign - more prominent */}
+        <div className="relative z-10 transform scale-125 mt-4">
           <ShopStatus />
         </div>
+      </div>
+      
+      {/* Tiny rising bubbles with neon colors */}
+      <div className="absolute w-6 h-6 left-[20%] bottom-16 rounded-full overflow-hidden animate-[float-up_15s_linear_infinite]">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/70 via-blue-500/40 to-transparent backdrop-blur-sm shadow-sm border border-cyan-400/50"></div>
+      </div>
+      <div className="absolute w-4 h-4 right-[25%] bottom-10 rounded-full overflow-hidden animate-[float-up_12s_linear_infinite_3s]">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-400/70 via-blue-500/40 to-transparent backdrop-blur-sm shadow-sm border border-purple-400/50"></div>
+      </div>
+      <div className="absolute w-3 h-3 right-[40%] bottom-20 rounded-full overflow-hidden animate-[float-up_10s_linear_infinite_5s]">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/70 via-purple-500/40 to-transparent backdrop-blur-sm shadow-sm border border-blue-400/50"></div>
       </div>
     </main>
   )
