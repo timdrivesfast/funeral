@@ -45,6 +45,12 @@
   75% { opacity: 0.5; }
 }
 
+/* Tron-style scan line animation */
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
 /* Animations */
 .animate-float {
   animation: float 15s ease-in-out infinite;
