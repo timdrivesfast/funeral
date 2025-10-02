@@ -7,21 +7,6 @@ export default function Home() {
       {/* Clean white background */}
       <div className="absolute inset-0 bg-white z-0" />
       
-      {/* Crash Bandicoot - Large behind logo */}
-      <div className="absolute inset-0 flex items-center justify-center z-5">
-        <div className="relative">
-          {/* Subtle pink glow effect */}
-          <div className="absolute inset-0 bg-pink-200/20 blur-3xl transform scale-200"></div>
-          {/* Image without bubble container */}
-          <Image
-            src="/crash.png"
-            alt="Crash Bandicoot"
-            width={600}
-            height={600}
-            className="opacity-30 hover:opacity-40 transition-opacity duration-500"
-          />
-        </div>
-      </div>
       
       {/* Translucent pink holographic bubbles */}
       {/* Large bubble left */}
