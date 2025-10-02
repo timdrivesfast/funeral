@@ -4,78 +4,61 @@ import Image from 'next/image'
 export default function Home() {
   return (
     <main className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden">
-      {/* Cyberpunk gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black via-purple-900 to-blue-900 z-0" />
-      
-      {/* Tron-inspired central light source */}
-      <div className="absolute bottom-[30%] left-1/2 transform -translate-x-1/2 w-60 h-60 bg-gradient-radial from-cyan-400 via-cyan-500/30 to-transparent rounded-full blur-md"></div>
-      
-      {/* Grid overlay for cyberpunk feel */}
-      <div className="absolute inset-0" style={{ 
-        backgroundImage: `
-          linear-gradient(0deg, rgba(0, 231, 255, 0.1) 1px, transparent 1px), 
-          linear-gradient(90deg, rgba(0, 231, 255, 0.1) 1px, transparent 1px)
-        `,
-        backgroundSize: '40px 40px',
-        backgroundPosition: 'center',
-        perspective: '500px',
-        transform: 'rotateX(60deg) translateY(100px)'
-      }}></div>
+      {/* Clean white background */}
+      <div className="absolute inset-0 bg-white z-0" />
       
       {/* Crash Bandicoot - Large behind logo */}
       <div className="absolute inset-0 flex items-center justify-center z-5">
         <div className="relative">
-          {/* Tron-style glow effect */}
-          <div className="absolute inset-0 bg-cyan-400/15 blur-3xl transform scale-200"></div>
+          {/* Subtle pink glow effect */}
+          <div className="absolute inset-0 bg-pink-200/20 blur-3xl transform scale-200"></div>
           {/* Image without bubble container */}
           <Image
             src="/crash.png"
             alt="Crash Bandicoot"
             width={600}
             height={600}
-            className="opacity-50 hover:opacity-70 transition-opacity duration-500"
+            className="opacity-30 hover:opacity-40 transition-opacity duration-500"
           />
-          {/* Animated scan line effect */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-400/8 to-transparent animate-[scan-line_4s_linear_infinite]"></div>
         </div>
       </div>
       
-      {/* Neon glass bubbles - moved up to avoid footer clash */}
+      {/* Translucent pink holographic bubbles */}
       {/* Large bubble left */}
       <div className="absolute bottom-[25%] left-[10%] w-36 h-36 rounded-full overflow-hidden animate-[float_15s_ease-in-out_infinite]">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/60 via-blue-500/40 to-purple-600/30 backdrop-blur-sm shadow-lg border border-cyan-300/50"></div>
-        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-cyan-300 opacity-70"></div>
-        {/* Animated internal reflection */}
-        <div className="absolute inset-0 bg-gradient-to-b from-cyan-400/40 via-transparent to-transparent -translate-y-full animate-[bubble-shine_8s_ease-in-out_infinite]"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-300/40 via-pink-200/30 to-pink-400/20 backdrop-blur-sm shadow-lg border border-pink-200/30"></div>
+        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-pink-300/50 opacity-60"></div>
+        {/* Subtle holographic reflection */}
+        <div className="absolute inset-0 bg-gradient-to-b from-pink-300/30 via-transparent to-transparent -translate-y-full animate-[bubble-shine_8s_ease-in-out_infinite]"></div>
       </div>
       
       {/* Medium bubble right */}
       <div className="absolute bottom-[20%] right-[15%] w-28 h-28 rounded-full overflow-hidden animate-[float_12s_ease-in-out_infinite_0.5s]">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/60 via-blue-600/40 to-cyan-700/30 backdrop-blur-sm shadow-lg border border-purple-300/50"></div>
-        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-purple-300 opacity-70"></div>
-        {/* Animated internal reflection */}
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-400/40 via-transparent to-transparent -translate-y-full animate-[bubble-shine_10s_ease-in-out_infinite_1s]"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-400/40 via-pink-300/30 to-pink-500/20 backdrop-blur-sm shadow-lg border border-pink-300/30"></div>
+        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-pink-400/50 opacity-60"></div>
+        {/* Subtle holographic reflection */}
+        <div className="absolute inset-0 bg-gradient-to-b from-pink-400/30 via-transparent to-transparent -translate-y-full animate-[bubble-shine_10s_ease-in-out_infinite_1s]"></div>
       </div>
       
       {/* Small floating bubbles */}
       <div className="absolute bottom-[35%] left-[30%] w-14 h-14 rounded-full overflow-hidden animate-[float_8s_ease-in-out_infinite_1.2s]">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/60 via-purple-500/40 to-cyan-600/30 backdrop-blur-sm shadow-lg border border-blue-300/50"></div>
-        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-blue-300 opacity-70"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-300/40 via-pink-200/30 to-pink-400/20 backdrop-blur-sm shadow-lg border border-pink-200/30"></div>
+        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-pink-300/50 opacity-60"></div>
       </div>
       
       <div className="absolute bottom-[30%] right-[40%] w-10 h-10 rounded-full overflow-hidden animate-[float_6s_ease-in-out_infinite_0.8s]">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/60 via-purple-500/40 to-blue-600/30 backdrop-blur-sm shadow-lg border border-cyan-300/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-400/40 via-pink-300/30 to-pink-500/20 backdrop-blur-sm shadow-lg border border-pink-300/30"></div>
       </div>
       
       {/* Clean bottom area - removed digital circuit horizon line */}
       
       {/* Clean, simple logo and status */}
       <div className="relative z-10 flex flex-col items-center gap-8 px-6">
-        {/* Modern, Helvetica FUNERAL logo with neon effect */}
+        {/* Modern, Helvetica FUNERAL logo with clean styling */}
         <div className="relative py-4">
           <h1 className="text-6xl md:text-8xl font-bold tracking-tight">
             <span 
-              className="relative inline-block text-white drop-shadow-[0_0_10px_rgba(6,182,212,0.7)]" 
+              className="relative inline-block text-black drop-shadow-sm" 
               style={{ fontFamily: 'Helvetica, Arial, sans-serif', textTransform: 'uppercase' }}>
               FUNERAL
             </span>
@@ -88,15 +71,15 @@ export default function Home() {
         </div>
       </div>
       
-      {/* Tiny rising bubbles with neon colors - moved up to avoid footer */}
+      {/* Tiny rising pink bubbles - moved up to avoid footer */}
       <div className="absolute w-6 h-6 left-[20%] bottom-24 rounded-full overflow-hidden animate-[float-up_15s_linear_infinite]">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/70 via-blue-500/40 to-transparent backdrop-blur-sm shadow-sm border border-cyan-400/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-300/60 via-pink-200/40 to-transparent backdrop-blur-sm shadow-sm border border-pink-300/40"></div>
       </div>
       <div className="absolute w-4 h-4 right-[25%] bottom-20 rounded-full overflow-hidden animate-[float-up_12s_linear_infinite_3s]">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-400/70 via-blue-500/40 to-transparent backdrop-blur-sm shadow-sm border border-purple-400/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-400/60 via-pink-300/40 to-transparent backdrop-blur-sm shadow-sm border border-pink-400/40"></div>
       </div>
       <div className="absolute w-3 h-3 right-[40%] bottom-28 rounded-full overflow-hidden animate-[float-up_10s_linear_infinite_5s]">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-400/70 via-purple-500/40 to-transparent backdrop-blur-sm shadow-sm border border-blue-400/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-300/60 via-pink-400/40 to-transparent backdrop-blur-sm shadow-sm border border-pink-300/40"></div>
       </div>
     </main>
   )
