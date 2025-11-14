@@ -43,7 +43,7 @@ export default function Home() {
         <div className="relative py-4">
           <h1 className="text-6xl md:text-8xl font-bold tracking-tight">
             <span 
-              className="relative inline-block text-black drop-shadow-sm" 
+              className="relative inline-block text-[#ff6fa8] drop-shadow-[0_6px_30px_rgba(255,111,168,0.35)]" 
               style={{ fontFamily: 'Helvetica, Arial, sans-serif', textTransform: 'uppercase' }}>
               FUNERAL
             </span>

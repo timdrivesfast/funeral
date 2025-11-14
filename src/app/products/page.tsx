@@ -1,6 +1,5 @@
 import { Suspense } from 'react'
 import ProductGrid from '../components/ProductGrid'
-import Image from 'next/image'
 
 interface Props {
   searchParams: { [key: string]: string | string[] | undefined }
@@ -13,82 +12,62 @@ export default async function ProductsPage({ searchParams }: Props) {
   const title = category ? `${category.charAt(0).toUpperCase()}${category.slice(1)}` : 'Products'
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden bg-black">
-      {/* Cyberpunk/Tron style background */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black via-blue-950 to-black z-0" />
-      
-      {/* Cyberpunk grid overlay */}
-      <div className="fixed inset-0 bg-[url('/grid.svg')] bg-repeat opacity-20 z-0"></div>
-      
-      {/* Blue neon glow effects */}
-      <div className="fixed -bottom-20 left-1/4 w-1/2 h-40 bg-cyan-500 rounded-full opacity-20 blur-[100px] animate-pulse-slow z-0"></div>
-      <div className="fixed -top-20 right-1/3 w-1/3 h-40 bg-purple-600 rounded-full opacity-20 blur-[100px] animate-pulse-slow z-0"></div>
-      <div className="fixed top-1/4 left-10 w-1/5 h-40 bg-cyan-400 rounded-full opacity-10 blur-[80px] animate-pulse-slow z-0"></div>
-      
-      {/* Horizontal grid lines */}
-      <div className="fixed left-0 right-0 h-px bg-cyan-500/20 top-1/4 z-0"></div>
-      <div className="fixed left-0 right-0 h-px bg-cyan-500/20 top-2/4 z-0"></div>
-      <div className="fixed left-0 right-0 h-px bg-cyan-500/20 top-3/4 z-0"></div>
-      
-      {/* Vertical grid lines */}
-      <div className="fixed top-0 bottom-0 w-px bg-cyan-500/20 left-1/4 z-0"></div>
-      <div className="fixed top-0 bottom-0 w-px bg-cyan-500/20 left-2/4 z-0"></div>
-      <div className="fixed top-0 bottom-0 w-px bg-cyan-500/20 left-3/4 z-0"></div>
-      
-      {/* Neon glass bubbles */}
-      <div className="fixed w-44 h-44 right-24 bottom-60 rounded-full overflow-hidden animate-[float_15s_ease-in-out_infinite] z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-blue-900/50 to-cyan-500/30 backdrop-blur-sm shadow-[0_0_15px_rgba(6,182,212,0.5)] border border-cyan-500/30"></div>
-        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-cyan-400 opacity-80"></div>
-        {/* Animated internal reflection */}
-        <div className="absolute inset-0 bg-gradient-to-b from-cyan-400/20 via-transparent to-transparent -translate-y-full animate-[bubble-shine_8s_ease-in-out_infinite]"></div>
+    <main className="relative min-h-screen overflow-hidden bg-white">
+      {/* Soft gradient backdrop */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-rose-50 to-white z-0" />
+
+      {/* Floating bubbles to mirror the home page */}
+      <div className="absolute -left-10 top-24 w-44 h-44 rounded-full overflow-hidden animate-[float_18s_ease-in-out_infinite] z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-200/60 via-pink-100/50 to-pink-300/40 backdrop-blur-md border border-pink-200/40 shadow-[0_10px_30px_rgba(255,182,193,0.35)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent -translate-y-full animate-[bubble-shine_12s_ease-in-out_infinite]" />
       </div>
-      
-      <div className="fixed w-32 h-32 left-24 top-1/2 rounded-full overflow-hidden animate-[float_12s_ease-in-out_infinite_0.5s] z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-purple-900/50 to-purple-500/30 backdrop-blur-sm shadow-[0_0_15px_rgba(147,51,234,0.5)] border border-purple-500/30"></div>
-        <div className="absolute top-0 left-1/4 right-1/4 h-0.5 bg-purple-400 opacity-80"></div>
-        {/* Animated internal reflection */}
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-400/20 via-transparent to-transparent -translate-y-full animate-[bubble-shine_10s_ease-in-out_infinite_1s]"></div>
+      <div className="absolute right-10 top-1/3 w-32 h-32 rounded-full overflow-hidden animate-[float_14s_ease-in-out_infinite_0.5s] z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-300/60 via-pink-200/50 to-orange-200/40 backdrop-blur-md border border-pink-200/40 shadow-[0_10px_25px_rgba(255,182,193,0.3)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/40 to-transparent -translate-y-full animate-[bubble-shine_10s_ease-in-out_infinite_1s]" />
       </div>
-      
-      {/* Content area with cyberpunk panel effect */}
-      <div className="relative z-10 pt-20 pb-24 px-4 md:px-10">
-        <div className="max-w-7xl mx-auto">
-          {/* "PRODUCTS" with Tron/cyberpunk styling */}
+      <div className="absolute left-1/3 bottom-10 w-28 h-28 rounded-full overflow-hidden animate-[float_12s_ease-in-out_infinite_1s] z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-200/70 via-rose-100/60 to-amber-100/50 backdrop-blur-md border border-rose-200/40 shadow-[0_10px_25px_rgba(255,193,203,0.35)]" />
+      </div>
+      <div className="absolute right-1/4 bottom-20 w-16 h-16 rounded-full overflow-hidden animate-[float_9s_ease-in-out_infinite_0.2s] z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-200/70 via-pink-100/60 to-pink-300/50 backdrop-blur-sm border border-pink-200/40" />
+      </div>
+
+      {/* Content area */}
+      <div className="relative z-10 pt-24 pb-24 px-4 md:px-10">
+        <div className="max-w-6xl mx-auto">
+          {/* Title */}
           <div className="relative py-8 mb-12 text-center">
-            <h1 className="text-6xl md:text-7xl font-extrabold tracking-tighter">
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight">
               <span 
-                className="relative inline-block text-cyan-400 animate-pulse-slow drop-shadow-[0_0_8px_rgba(34,211,238,0.7)]" 
+                className="inline-block text-[#ff6fa8] drop-shadow-[0_6px_30px_rgba(255,111,168,0.35)]" 
                 style={{ fontFamily: 'Helvetica, sans-serif', textTransform: 'uppercase' }}>
                 {title}
               </span>
             </h1>
-            
-            {/* Animated neon accents around title */}
-            <div className="absolute -right-1 -top-1 w-14 h-14 bg-gradient-to-br from-cyan-900 to-cyan-500/40 rounded-full opacity-70 animate-[float_9s_ease-in-out_infinite_0.8s]"></div>
-            <div className="absolute -left-3 -bottom-2 w-10 h-10 bg-gradient-to-br from-purple-900 to-purple-500/40 rounded-full opacity-70 animate-[float_7s_ease-in-out_infinite_0.3s]"></div>
+            <div className="mt-4 text-sm uppercase tracking-[0.5em] text-pink-300">
+              curated objects
+            </div>
           </div>
-          
-          {/* Cyberpunk panel for products */}
-          <div className="relative p-8 md:p-12 backdrop-blur-md bg-black/30 rounded-xl border border-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.15)] overflow-hidden">
-            {/* Panel gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-cyan-950/20 to-black/30 rounded-xl pointer-events-none"></div>
-            {/* Grid pattern overlay */}
-            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat opacity-10"></div>
-            
-            <Suspense fallback={
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="animate-pulse aspect-square">
-                    <div className="bg-black/50 border border-cyan-900/50 h-full w-full rounded-lg shadow-[0_0_10px_rgba(6,182,212,0.2)]" />
-                  </div>
-                ))}
-              </div>
-            }>
-              <ProductGrid category={category} />
-            </Suspense>
+
+          {/* Product panel */}
+          <div className="relative p-6 md:p-10 rounded-[32px] bg-white/70 border border-pink-100 shadow-[0_25px_60px_rgba(255,182,193,0.25)] backdrop-blur-md overflow-hidden">
+            <div className="absolute inset-x-0 -top-20 h-40 bg-gradient-to-b from-pink-100/70 to-transparent pointer-events-none" />
+            <div className="relative">
+              <Suspense fallback={
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="animate-pulse aspect-square">
+                      <div className="bg-white/60 border border-pink-100 h-full w-full rounded-2xl shadow-inner" />
+                    </div>
+                  ))}
+                </div>
+              }>
+                <ProductGrid category={category} />
+              </Suspense>
+            </div>
           </div>
         </div>
       </div>
     </main>
   )
-} 
+}
